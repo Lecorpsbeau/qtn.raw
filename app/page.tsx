@@ -3,8 +3,6 @@
 import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import HeroSection from "@/components/HeroSection";
-import GallerySection from "@/components/GallerySection";
 import MouseImageTrail from "@/components/ui/MouseImageTrail";
 // ─────────────────────────────────────────────
 //  REAL PHOTOS — from /public/photos/
