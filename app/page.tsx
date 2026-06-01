@@ -7,6 +7,26 @@ import MouseImageTrail from "@/components/ui/MouseImageTrail";
 // ─────────────────────────────────────────────
 //  REAL PHOTOS — from /public/photos/
 // ─────────────────────────────────────────────
+const TOPPICS_PHOTOS = [
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456354746087_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456354748232_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456363112861_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456363126332_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456363134111_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456371500914_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456371533454_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456371557782_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456379884036_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456379885845_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456379902394_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456379909558_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456379931537_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456379943044_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456421851087_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456430251955_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456430265385_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456858097642_48773641125.jpg",
+];
 const ALL_PHOTOS = [
   // les_distingues (Brands / Marque)
   "/photos/les_distingues_1726479626_3458284215013028892_65780062195.jpg",
@@ -170,15 +190,20 @@ export default function HomePage() {
 // ─────────────────────────────────────────────
 //  HERO SECTION
 // ─────────────────────────────────────────────
+interface TrailImage {
+  id: number;
+  src: string;
+  x: number;
+  y: number;
+  rotation: number;
+}
+
 function HeroSection() {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  const [activeImages, setActiveImages] = useState<TrailImage[]>([]);
+  const lastMousePos = useRef({ x: 0, y: 0 });
+  const imageIndex = useRef(0);
 
-  // Physique de ressort pour l'inertie de l'image
-  const springX = useSpring(mouseX, { stiffness: 80, damping: 20 });
-  const springY = useSpring(mouseY, { stiffness: 80, damping: 20 });
-  const MotionDiv = motion.div as any;
-
+  // Parallaxe au scroll (conservé à l'identique)
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
@@ -186,8 +211,40 @@ function HeroSection() {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
+    const currentX = e.clientX - rect.left;
+    const currentY = e.clientY - rect.top;
+
+    // Calcul de la distance parcourue depuis la dernière image générée
+    const distance = Math.hypot(
+      currentX - lastMousePos.current.x,
+      currentY - lastMousePos.current.y
+    );
+
+    // Seuil d'apparition en pixels (ajuste si tu veux resserrer la traînée)
+    const spawnThreshold = 75;
+
+    if (distance > spawnThreshold) {
+      if (TOPPICS_PHOTOS.length === 0) return;
+
+      // Pioche séquentiellement dans tes TOPPICS_PHOTOS globales
+      const nextImgSrc = TOPPICS_PHOTOS[imageIndex.current % TOPPICS_PHOTOS.length];
+      imageIndex.current++;
+
+      // Rotation aléatoire organique pour le côté "raw / brut"
+      const randomRotation = Math.random() * 18 - 9; // Entre -9deg et 9deg
+
+      const newImage: TrailImage = {
+        id: Date.now() + Math.random(),
+        src: nextImgSrc,
+        x: currentX,
+        y: currentY,
+        rotation: randomRotation,
+      };
+
+      // On ajoute la nouvelle image et on limite à 10 max pour garder un max de fluidité
+      setActiveImages((prev) => [...prev, newImage].slice(-10));
+      lastMousePos.current = { x: currentX, y: currentY };
+    }
   };
 
   return (
@@ -198,28 +255,40 @@ function HeroSection() {
       className="relative flex flex-col items-center justify-center overflow-hidden"
       style={{ height: "calc(100vh - var(--nav-h))" }}
     >
-      {/* Image Flottante (Effet Curseur) */}
-      <MotionDiv
-        className="pointer-events-none absolute z-10 hidden md:block w-52 h-72 rounded-2xl overflow-hidden shadow-2xl border border-white/10"
-        style={{
-          left: springX,
-          top: springY,
-          x: "-50%",
-          y: "-50%",
-        }}
-      >
-        <Image
-          src="/photos/qtn.raw_1778371237_3893582603622214399_48773641125.jpg"
-          alt="Floating preview"
-          fill
-          className="object-cover"
-          priority
-        />
-      </MotionDiv>
+      {/* ─── TRAÎNÉE D'IMAGES EN CASCADE (Remplace l'ancienne image unique) ─── */}
+      <div className="absolute inset-0 pointer-events-none z-10 hidden md:block overflow-hidden">
+        <AnimatePresence>
+          {activeImages.map((img) => (
+            <motion.div
+              key={img.id}
+              initial={{ opacity: 0, scale: 0.6, rotate: img.rotation }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.4, transition: { duration: 0.3 } }}
+              className="absolute w-52 h-72 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-neutral-950"
+              style={{
+                left: img.x,
+                top: img.y,
+                x: "-50%",
+                y: "-50%",
+              }}
+            >
+              <Image
+                src={img.src}
+                alt="Trail link preview"
+                fill
+                className="object-cover pointer-events-none select-none"
+                unoptimized
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
 
-      {/* Contenu (Texte & Boutons) avec effet de parallaxe au scroll */}
+      {/* ─── CONTENU (Texte & Boutons) ─── */}
       <motion.div style={{ y, opacity }} className="flex flex-col items-center gap-10 px-4 z-20">
 
+        {/* Si tu veux afficher ton titre SVG, tu as juste à décommenter la ligne suivante : */}
+        {/* <HeroTextSVG /> */}
         {/* Tu peux remettre ton <HeroTextSVG /> ou tes titres ici si tu veux les afficher */}
 
         {/* CTA pills */}
@@ -260,69 +329,61 @@ function HeroSection() {
     </section>
   );
 }
-
 // ─────────────────────────────────────────────
 //  HERO TEXT SVG
 // ─────────────────────────────────────────────
 function HeroTextSVG() {
   return (
-    <svg
-      width="320" height="140"
-      viewBox="0 0 320 140"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ maxWidth: "78vw" }}
-      aria-label="The Portfolio of RAW"
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+      className="border border-white/15 bg-black/40 backdrop-blur-md rounded-[22px] sm:rounded-[32px] px-6 py-4 sm:px-12 sm:py-7 flex items-center justify-center gap-x-4 sm:gap-x-7 max-w-[92vw] flex-wrap md:flex-nowrap shadow-2xl"
     >
-      <motion.rect
-        x="16" y="24" width="288" height="92" rx="16"
-        stroke="white" strokeWidth="2" fill="rgba(0,0,0,0.45)"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-      />
-      {[
-        [18, 14, 30, 44],
-        [18, 14, 50, 38],
-        [302, 10, 290, 42],
-        [302, 10, 270, 36],
-        [160, 4, 158, 28],
-      ].map(([x1, y1, x2, y2], i) => (
-        <motion.line
-          key={i}
-          x1={x1} y1={y1} x2={x2} y2={y2}
-          stroke="white" strokeWidth="1.8" strokeLinecap="round"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1 + i * 0.06 }}
+      {/* ─── BLOC TEXTE : THE PORTFOLIO OF ─── */}
+      <div className="flex items-center text-white select-none">
+        {/* Le "The" retourné verticalement sur le côté */}
+        <span
+          className="-rotate-90 inline-block origin-center text-[10px] sm:text-xs uppercase tracking-widest opacity-50 -mr-2 sm:-mr-3 select-none pointer-events-none"
+          style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
+        >
+          The
+        </span>
+
+        {/* Le mot "Portfolio" en grande écriture Serif */}
+        <span
+          className="text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight leading-none"
+          style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
+        >
+          Portfolio
+        </span>
+
+        {/* Le petit "of" de transition */}
+        <span
+          className="text-sm sm:text-lg md:text-xl opacity-60 ml-2.5 self-end mb-0.5 sm:mb-1.5"
+          style={{ fontFamily: "var(--font-font-dm)" }} // Vibe épurée pour le "of"
+        >
+          of
+        </span>
+      </div>
+
+      {/* ─── BLOC IMAGE : LOGO RAW BRUTALISTE ─── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="w-28 sm:w-40 md:w-48 flex items-center justify-center pt-2 md:pt-0"
+      >
+        <Image
+          src="/raw.png"
+          alt="RAW Logo"
+          width={240}
+          height={90}
+          priority
+          className="w-full h-auto object-contain select-none pointer-events-none drop-shadow-[0_4px_12px_rgba(255,255,255,0.08)]"
         />
-      ))}
-      <motion.text
-        x="50%" y="97"
-        textAnchor="middle"
-        fontFamily="'Dela Gothic One', sans-serif"
-        fontSize="72"
-        fill="white"
-        letterSpacing="-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.7 }}
-      >
-        raw
-      </motion.text>
-      <motion.text
-        x="42" y="46"
-        fontFamily="'Playfair Display', serif"
-        fontSize="11"
-        fontStyle="italic"
-        fill="rgba(255,255,255,0.55)"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 1.3 }}
-      >
-        The Portfolio of
-      </motion.text>
-    </svg>
+      </motion.div>
+    </motion.div>
   );
 }
 

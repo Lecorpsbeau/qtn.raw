@@ -1,96 +1,89 @@
 "use client";
-
-import { useEffect, useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 
-// 1. AJOUTE ICI LES VRAIS NOMS DE TES PHOTOS situées dans public/images/qtn.raw/toppics/
-const IMAGE_POOL = [
-    "/images/qtn.raw/toppics/photo1.jpg",
-    "/images/qtn.raw/toppics/photo2.jpg",
-    "/images/qtn.raw/toppics/photo3.jpg",
-    "/images/qtn.raw/toppics/photo4.jpg",
-    "/images/qtn.raw/toppics/photo5.jpg",
-];
-
-interface TrailItem {
+interface ImageInstance {
     id: number;
+    src: string;
     x: number;
     y: number;
-    src: string;
     rotation: number;
 }
 
-export default function MouseImageTrail() {
-    const [trail, setTrail] = useState<TrailItem[]>([]);
-    const lastSpawnTime = useRef<number>(0);
-    const imageIndex = useRef<number>(0);
+interface MouseImageTrailProps {
+    images: string[];
+}
 
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            const now = Date.now();
+export default function MouseImageTrail({ images }: MouseImageTrailProps) {
+    const [activeImages, setActiveImages] = useState<ImageInstance[]>([]);
 
-            // Vérifie si 0.2 seconde (200ms) se sont écoulées depuis la dernière image
-            if (now - lastSpawnTime.current >= 200) {
-                lastSpawnTime.current = now;
+    // Refs pour suivre la position et l'index sans déclencher de re-renders inutiles
+    const lastMousePos = useRef({ x: 0, y: 0 });
+    const imageIndex = useRef(0);
 
-                // Sélectionne l'image suivante dans la liste (boucle continue)
-                const currentSrc = IMAGE_POOL[imageIndex.current];
-                imageIndex.current = (imageIndex.current + 1) % IMAGE_POOL.length;
+    const handleMouseMove = (e: React.MouseEvent) => {
+        const currentX = e.clientX;
+        const currentY = e.clientY;
 
-                // Génère une rotation aléatoire légère pour donner un effet organique "papier"
-                const randomRotation = Math.random() * 20 - 10; // Entre -10deg et 10deg
+        // Calcul de la distance de déplacement depuis la dernière image affichée
+        const distance = Math.hypot(
+            currentX - lastMousePos.current.x,
+            currentY - lastMousePos.current.y
+        );
 
-                const newItem: TrailItem = {
-                    id: now + Math.random(), // ID unique
-                    x: e.clientX,
-                    y: e.clientY,
-                    src: currentSrc,
-                    rotation: randomRotation,
-                };
+        // Seuil en pixels avant d'afficher la prochaine image (Ajuste à ta guise !)
+        const spawnThreshold = 60;
 
-                // Ajoute la nouvelle image au tableau
-                setTrail((prev) => [...prev, newItem]);
+        if (distance > spawnThreshold) {
+            if (images.length === 0) return;
 
-                // Supprime l'image automatiquement après exactement 2 secondes (2000ms)
-                setTimeout(() => {
-                    setTrail((prev) => prev.filter((item) => item.id !== newItem.id));
-                }, 2000);
-            }
-        };
+            // Sélection de l'image suivante dans le tableau (boucle infinie avec le modulo)
+            const nextImgSrc = images[imageIndex.current % images.length];
+            imageIndex.current++;
 
-        window.addEventListener("mousemove", handleMouseMove);
-        return () => window.removeEventListener("mousemove", handleMouseMove);
-    }, []);
+            // Rotation aléatoire pour donner le style brute / raw
+            const randomRotation = Math.random() * 20 - 10; // Entre -10deg et 10deg
+
+            const newImage: ImageInstance = {
+                id: Date.now(), // ID unique pour AnimatePresence
+                src: nextImgSrc,
+                x: currentX,
+                y: currentY,
+                rotation: randomRotation,
+            };
+
+            // On ajoute la nouvelle image et on ne garde que les 12 dernières à l'écran
+            setActiveImages((prev) => [...prev, newImage].slice(-12));
+
+            // On met à jour le point de repère
+            lastMousePos.current = { x: currentX, y: currentY };
+        }
+    };
 
     return (
-        <div className="pointer-events-none fixed inset-0 z-40 overflow-hidden">
+        <div
+            onMouseMove={handleMouseMove}
+            className="pointer-events-none fixed inset-0 z-40 overflow-hidden"
+        >
             <AnimatePresence>
-                {trail.map((img) => (
+                {activeImages.map((img) => (
                     <motion.div
                         key={img.id}
-                        initial={{ opacity: 0, scale: 0.5, rotate: img.rotation - 10 }}
-                        animate={{ opacity: 1, scale: 1, rotate: img.rotation }}
-                        exit={{ opacity: 0, scale: 0.8, y: 20, transition: { duration: 0.4 } }}
-                        transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                        initial={{ opacity: 0, scale: 0.7, rotate: img.rotation }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.4 } }}
+                        className="absolute w-40 h-52 bg-neutral-900 border border-white/10 rounded-lg overflow-hidden shadow-2xl"
                         style={{
-                            position: "fixed",
                             left: img.x,
                             top: img.y,
-                            x: "-50%",
-                            y: "-50%",
-                            width: "160px",  // Ajuste la taille de la miniature ici
-                            height: "220px", // Ajuste la taille de la miniature ici
+                            transform: "translate(-50%, -50%)", // Centre l'image sur le curseur
                         }}
-                        className="rounded-xl overflow-hidden shadow-2xl border border-white/10 bg-[#14110f]"
                     >
-                        <Image
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
                             src={img.src}
-                            alt="Trail preview"
-                            fill
-                            sizes="160px"
-                            className="object-cover"
-                            priority
+                            alt="Trail link"
+                            className="w-full h-full object-cover pointer-events-none select-none"
                         />
                     </motion.div>
                 ))}
