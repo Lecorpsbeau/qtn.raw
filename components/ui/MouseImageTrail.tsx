@@ -16,50 +16,42 @@ interface MouseImageTrailProps {
 
 export default function MouseImageTrail({ images }: MouseImageTrailProps) {
     const [activeImages, setActiveImages] = useState<ImageInstance[]>([]);
-
-    // Refs pour suivre la position et l'index sans déclencher de re-renders inutiles
     const lastMousePos = useRef({ x: 0, y: 0 });
     const imageIndex = useRef(0);
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        const currentX = e.clientX;
-        const currentY = e.clientY;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const currentX = e.clientX - rect.left;
+        const currentY = e.clientY - rect.top;
 
-        // Calcul de la distance de déplacement depuis la dernière image affichée
         const distance = Math.hypot(
             currentX - lastMousePos.current.x,
             currentY - lastMousePos.current.y
-        );
+        ) * 2;
 
-        // Seuil en pixels avant d'afficher la prochaine image (Ajuste à ta guise !)
-        const spawnThreshold = 60;
+        const spawnThreshold = 75; // Tu peux baisser ce chiffre si tu veux encore plus d'images
 
+        // 2. La condition se déclenchera beaucoup plus souvent
         if (distance > spawnThreshold) {
-            if (images.length === 0) return;
+            if (!images || images.length === 0) return;
 
-            // Sélection de l'image suivante dans le tableau (boucle infinie avec le modulo)
             const nextImgSrc = images[imageIndex.current % images.length];
             imageIndex.current++;
 
-            // Rotation aléatoire pour donner le style brute / raw
-            const randomRotation = Math.random() * 20 - 10; // Entre -10deg et 10deg
+            const randomRotation = Math.random() * 18 - 9;
 
-            const newImage: ImageInstance = {
-                id: Date.now(), // ID unique pour AnimatePresence
+            const newImage = {
+                id: Date.now() + Math.random(),
                 src: nextImgSrc,
                 x: currentX,
                 y: currentY,
                 rotation: randomRotation,
             };
 
-            // On ajoute la nouvelle image et on ne garde que les 12 dernières à l'écran
-            setActiveImages((prev) => [...prev, newImage].slice(-12));
-
-            // On met à jour le point de repère
+            setActiveImages((prev) => [...prev, newImage].slice(-10));
             lastMousePos.current = { x: currentX, y: currentY };
         }
     };
-
     return (
         <div
             onMouseMove={handleMouseMove}
