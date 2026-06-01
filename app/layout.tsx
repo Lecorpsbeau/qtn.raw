@@ -1,4 +1,4 @@
-import "./globals.css";
+import '../styles/globals.css';
 import MouseImageTrail from "@/components/ui/MouseImageTrail"; // <-- Importe-le ici
 
 export const metadata = {
