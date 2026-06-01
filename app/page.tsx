@@ -8,7 +8,7 @@ import MouseImageTrail from "@/components/ui/MouseImageTrail";
 //  REAL PHOTOS — from /public/photos/
 // ─────────────────────────────────────────────
 const TOPPICS_PHOTOS = [
-
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456354746087_48773641125.jpg",
   "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456354748232_48773641125.jpg",
   "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456363112861_48773641125.jpg",
   "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456363126332_48773641125.jpg",
@@ -288,7 +288,7 @@ function HeroSection() {
       <motion.div style={{ y, opacity }} className="flex flex-col items-center gap-10 px-4 z-20">
 
         {/* Si tu veux afficher ton titre SVG, tu as juste à décommenter la ligne suivante : */}
-        {/* <HeroTextSVG /> */}
+        {<HeroTextSVG />}
         {/* Tu peux remettre ton <HeroTextSVG /> ou tes titres ici si tu veux les afficher */}
 
         {/* CTA pills */}
