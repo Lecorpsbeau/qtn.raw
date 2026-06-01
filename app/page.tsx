@@ -8,7 +8,8 @@ import MouseImageTrail from "@/components/ui/MouseImageTrail";
 //  REAL PHOTOS — from /public/photos/
 // ─────────────────────────────────────────────
 const TOPPICS_PHOTOS = [
-
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456354746087_48773641125.jpg",
+  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456354748232_48773641125.jpg",
   "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456363112861_48773641125.jpg",
   "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456363126332_48773641125.jpg",
   "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456363134111_48773641125.jpg",
