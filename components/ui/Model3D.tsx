@@ -21,15 +21,7 @@ function CameraModel() {
         modelRef.current.rotation.x = THREE.MathUtils.lerp(modelRef.current.rotation.x, -targetY, 0.03);
     });
 
-    return (
-        /* <Center> force le modèle à se caler pile au milieu de la scène */
-        <Center>
-            {/* On baisse le scale à 0.2 (au lieu de 1.5) pour éviter qu'il n'avale la caméra */}
-            <primitive ref={modelRef} object={scene} scale={0.2} />
-        </Center>
-    );
 }
-
 export default function Model3D() {
     return (
         <div className="w-full max-w-md mx-auto h-[400px] relative z-10">
@@ -44,10 +36,7 @@ export default function Model3D() {
                         powerPreference: "high-performance",
                         alpha: true
                     }}>
-                    <ambientLight intensity={0.7} />
-                    <directionalLight position={[10, 10, 5]} intensity={1.5} />
-                    <CameraModel />
-                    <Environment preset="city" />
+
                 </Canvas>
             </Suspense>
         </div>
