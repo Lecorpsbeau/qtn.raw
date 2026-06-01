@@ -1,36 +1,24 @@
-import type { Metadata } from "next";
-import "@/styles/globals.css";
-import Navbar from "@/components/layout/Navbar";
-import CustomCursor from "@/components/ui/CustomCursor";
+import "./globals.css";
+import MouseImageTrail from "@/components/ui/MouseImageTrail"; // <-- Importe-le ici
 
-export const metadata: Metadata = {
-  title: "The Portfolio of RAW — Quentin Pacifici",
-  description:
-    "Photography portfolio by Quentin Pacifici. Mode, automobile et portrait à Paris.",
-  openGraph: {
-    title: "The Portfolio of RAW",
-    description: "Photographs by Quentin Pacifici — @qtn.raw",
-    type: "website",
-  },
+export const metadata = {
+  title: "RAW — Portfolio",
+  description: "The Portfolio of RAW",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="fr" className="scroll-smooth">
+    <html lang="fr">
       <body>
-        {/* Animated mesh background — fixed layer */}
-        <div className="mesh-bg" aria-hidden />
+        {/* 1. On place l'effet ici pour qu'il plane au-dessus de tout le site */}
+        <MouseImageTrail />
 
-        {/* Custom cursor */}
-        <CustomCursor />
-
-        {/* Sticky navbar */}
-        <Navbar />
-
-        {/* Page content */}
-        <main className="relative z-10 pt-[var(--nav-h)]">
-          {children}
-        </main>
+        {/* 2. Tout ton code actuel (tes pages, ton texte, etc.) s'affiche ici */}
+        {children}
       </body>
     </html>
   );

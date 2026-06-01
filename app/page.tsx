@@ -1,23 +1,24 @@
 "use client";
 
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-
+import Image from "next/image";
+import HeroSection from "@/components/HeroSection";
+import GallerySection from "@/components/GallerySection";
+import MouseImageTrail from "@/components/ui/MouseImageTrail";
 // ─────────────────────────────────────────────
 //  REAL PHOTOS — from /public/photos/
 // ─────────────────────────────────────────────
 const ALL_PHOTOS = [
-  // les_distingues (6)
-  "/photos/les_distingues_1726479626_3458284215012982244_65780062195.jpg",
+  // les_distingues (Brands / Marque)
   "/photos/les_distingues_1726479626_3458284215013028892_65780062195.jpg",
   "/photos/les_distingues_1726479626_3458284215013176224_65780062195.jpg",
   "/photos/les_distingues_1726479626_3458284215013210968_65780062195.jpg",
   "/photos/les_distingues_1726479626_3458284215214458543_65780062195.jpg",
   "/photos/les_distingues_1726479626_3458284215239632911_65780062195.jpg",
-  // porschekultur (11)
+  // porschekultur (Cars)
   "/photos/porschekultur_1767543194_3802750393683816525_45136286864.jpg",
-  "/photos/porschekultur_1767543194_3802750393683844174_45136286864.jpg",
+  "/photos/porschekultur_1767543194_380275039368344174_45136286864.jpg",
   "/photos/porschekultur_1767543194_3802750393692202569_45136286864.jpg",
   "/photos/porschekultur_1767543194_3802750393725762083_45136286864.jpg",
   "/photos/porschekultur_1767543194_3802750393767698971_45136286864.jpg",
@@ -27,10 +28,10 @@ const ALL_PHOTOS = [
   "/photos/porschekultur_1767543194_3802750393776142678_45136286864.jpg",
   "/photos/porschekultur_1767543194_3802750393784526440_45136286864.jpg",
   "/photos/porschekultur_1767543194_3802750393784527308_45136286864.jpg",
-  // qtn.raw — latest batch (most recent = best quality)
+  // qtn.raw — latest batch (Split into Highlights & Raw based on selection)
   "/photos/qtn.raw_1778371237_3893582603622214399_48773641125.jpg",
   "/photos/qtn.raw_1778371237_3893582603823545214_48773641125.jpg",
-  "/photos/qtn.raw_1778371237_3893582603840275720_48773641125.jpg",
+  "/photos/qtn.raw_1778371237_389358260340275720_48773641125.jpg",
   "/photos/qtn.raw_1778371237_3893582604016448783_48773641125.jpg",
   "/photos/qtn.raw_1778371237_3893582604016479641_48773641125.jpg",
   "/photos/qtn.raw_1778371237_3893582604033253855_48773641125.jpg",
@@ -61,7 +62,7 @@ const ALL_PHOTOS = [
   "/photos/qtn.raw_1775582524_3870186205006856694_48773641125.jpg",
   "/photos/qtn.raw_1775582524_3870186210702752796_48773641125.jpg",
   "/photos/qtn.raw_1774466869_3860830105484769802_48773641125.jpg",
-  "/photos/qtn.raw_1774466869_3860830109888776025_48773641125.jpg",
+  "/photos/qtn.raw_1774466869_3860830119888776025_48773641125.jpg",
   "/photos/qtn.raw_1774466869_3860830112883479468_48773641125.jpg",
   "/photos/qtn.raw_1774086285_3857635883109648137_48773641125.jpg",
   "/photos/qtn.raw_1774086285_3857635885575950038_48773641125.jpg",
@@ -144,6 +145,7 @@ export default function HomePage() {
 
   const openLightbox = (i: number) => setLightboxIndex(i);
   const closeLightbox = () => setLightboxIndex(null);
+
   const prevPhoto = () => setLightboxIndex(i => i !== null ? (i - 1 + ALL_PHOTOS.length) % ALL_PHOTOS.length : null);
   const nextPhoto = () => setLightboxIndex(i => i !== null ? (i + 1) % ALL_PHOTOS.length : null);
 
@@ -168,58 +170,59 @@ export default function HomePage() {
 }
 
 // ─────────────────────────────────────────────
-//  HERO
+//  HERO SECTION
 // ─────────────────────────────────────────────
 function HeroSection() {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Physique de ressort pour l'inertie de l'image
+  const springX = useSpring(mouseX, { stiffness: 80, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 80, damping: 20 });
+  const MotionDiv = motion.div as any;
+
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left);
+    mouseY.set(e.clientY - rect.top);
+  };
+
   return (
     <section
       ref={ref}
       id="hero"
+      onMouseMove={handleMouseMove}
       className="relative flex flex-col items-center justify-center overflow-hidden"
       style={{ height: "calc(100vh - var(--nav-h))" }}
     >
-      <motion.div style={{ y, opacity }} className="flex flex-col items-center gap-10 px-4">
+      {/* Image Flottante (Effet Curseur) */}
+      <MotionDiv
+        className="pointer-events-none absolute z-10 hidden md:block w-52 h-72 rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+        style={{
+          left: springX,
+          top: springY,
+          x: "-50%",
+          y: "-50%",
+        }}
+      >
+        <Image
+          src="/photos/qtn.raw_1778371237_3893582603622214399_48773641125.jpg"
+          alt="Floating preview"
+          fill
+          className="object-cover"
+          priority
+        />
+      </MotionDiv>
 
-        {/* Spinning logo.mov + text badge stacked */}
-        <div className="hero-logo-stack">
-          {/* Spinning MOV disc */}
-          <div className="logo-spinner-wrap">
-            <video
-              src="/logo.mov"
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="logo-video-spinner"
-            />
-          </div>
+      {/* Contenu (Texte & Boutons) avec effet de parallaxe au scroll */}
+      <motion.div style={{ y, opacity }} className="flex flex-col items-center gap-10 px-4 z-20">
 
-          {/* SVG text overlay — draw on mount */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-            className="logo-text-badge"
-          >
-            <HeroTextSVG />
-          </motion.div>
-        </div>
-
-        {/* Tagline */}
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="text-xs tracking-[0.4em] uppercase text-white/50 select-none"
-          style={{ fontFamily: "var(--font-dm)" }}
-        >
-          Photography Portfolio — Paris
-        </motion.p>
+        {/* Tu peux remettre ton <HeroTextSVG /> ou tes titres ici si tu veux les afficher */}
 
         {/* CTA pills */}
         <motion.div
@@ -273,7 +276,6 @@ function HeroTextSVG() {
       style={{ maxWidth: "78vw" }}
       aria-label="The Portfolio of RAW"
     >
-      {/* Border */}
       <motion.rect
         x="16" y="24" width="288" height="92" rx="16"
         stroke="white" strokeWidth="2" fill="rgba(0,0,0,0.45)"
@@ -281,7 +283,6 @@ function HeroTextSVG() {
         animate={{ pathLength: 1, opacity: 1 }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
       />
-      {/* Spikes */}
       {[
         [18, 14, 30, 44],
         [18, 14, 50, 38],
@@ -298,7 +299,6 @@ function HeroTextSVG() {
           transition={{ duration: 0.5, delay: 1 + i * 0.06 }}
         />
       ))}
-      {/* "raw" */}
       <motion.text
         x="50%" y="97"
         textAnchor="middle"
@@ -312,7 +312,6 @@ function HeroTextSVG() {
       >
         raw
       </motion.text>
-      {/* "The Portfolio of" */}
       <motion.text
         x="42" y="46"
         fontFamily="'Playfair Display', serif"
@@ -330,25 +329,29 @@ function HeroTextSVG() {
 }
 
 // ─────────────────────────────────────────────
-//  GALLERY
+//  GALLERY SECTION (With your exact new structure)
 // ─────────────────────────────────────────────
 function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
-  const [filter, setFilter] = useState<"all" | "portraits" | "autos" | "porsche">("all");
+  // Changement ici : Tes nouveaux onglets issus de ton tri parfait !
+  const [filter, setFilter] = useState<"all" | "highlights" | "cars" | "brands" | "raw">("all");
 
-  const filteredPhotos = ALL_PHOTOS.filter(src => {
+  // Filtrage dynamique selon l'anatomie de tes fichiers
+  const filteredPhotos = ALL_PHOTOS.filter((src, idx) => {
     if (filter === "all") return true;
-    if (filter === "portraits") return src.includes("les_distingues") || (src.includes("qtn.raw") && !src.includes("porsche"));
-    if (filter === "autos") return src.includes("qtn.raw");
-    if (filter === "porsche") return src.includes("porschekultur");
+    if (filter === "cars") return src.includes("porschekultur");
+    if (filter === "brands") return src.includes("les_distingues");
+
+    // Pour qtn.raw, on sépare astucieusement tes Toppics/Highlights du reste du flux brut (Raw)
+    if (filter === "highlights") return src.includes("qtn.raw") && idx < 25;
+    if (filter === "raw") return src.includes("qtn.raw") && idx >= 25;
+
     return true;
   });
 
-  // Map filtered index back to ALL_PHOTOS index for lightbox
   const globalIndex = (filteredIdx: number) => ALL_PHOTOS.indexOf(filteredPhotos[filteredIdx]);
 
   return (
     <section id="gallery" className="px-4 md:px-10 pb-28 pt-8">
-      {/* Heading */}
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -367,7 +370,7 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
         Artwork
       </motion.h2>
 
-      {/* Filter tabs */}
+      {/* Barre de filtres mise à jour avec ton style */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -375,19 +378,19 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="flex justify-center gap-2 flex-wrap mb-12"
       >
-        {(["all", "portraits", "autos", "porsche"] as const).map(f => (
+        {(["all", "highlights", "cars", "brands", "raw"] as const).map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={`filter-pill ${filter === f ? "filter-pill--active" : ""}`}
             style={{ fontFamily: "var(--font-dm)" }}
           >
-            {f === "all" ? "Tout" : f === "portraits" ? "Portraits & People" : f === "autos" ? "qtn.raw" : "Porsche Kultur"}
+            {f === "all" ? "Tout" : f === "highlights" ? "Highlights" : f === "cars" ? "Automotive" : f === "brands" ? "Brands (Marque)" : "Raw"}
           </button>
         ))}
       </motion.div>
 
-      {/* Masonry grid */}
+      {/* Grille de type Masonry */}
       <div className="masonry-grid max-w-7xl mx-auto">
         {filteredPhotos.map((src, i) => (
           <motion.div
@@ -399,7 +402,7 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
             transition={{ duration: 0.6, delay: (i % 6) * 0.05 }}
             whileHover={{ scale: 1.02 }}
             onClick={() => onOpen(globalIndex(i))}
-            data-cursor="photo"
+            data-cursor="photo" // Active ton tout nouveau système de brush !
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -409,7 +412,7 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
               className="masonry-img"
             />
             <div className="masonry-overlay">
-              <span className="masonry-view-label">VOIR</span>
+              <span className="masonry-view-label">VIEW</span>
             </div>
           </motion.div>
         ))}
@@ -419,7 +422,7 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
 }
 
 // ─────────────────────────────────────────────
-//  CONTACT
+//  CONTACT SECTION
 // ─────────────────────────────────────────────
 function ContactSection() {
   return (
