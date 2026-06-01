@@ -330,7 +330,7 @@ function HeroSection() {
   );
 }
 // ─────────────────────────────────────────────
-//  HERO TEXT / COMPOSITION LOGO (Sans fond, Grand & Glowy)
+//  HERO TEXT / COMPOSITION LOGO
 // ─────────────────────────────────────────────
 function HeroTextSVG() {
   return (
@@ -338,44 +338,42 @@ function HeroTextSVG() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-      // 1. On a retiré : bg, border, backdrop-blur, padding et les arrondis.
-      // On garde juste la structure flexible pour aligner le texte et le logo.
-      className="flex items-center justify-center gap-x-4 sm:gap-x-8 w-full max-w-[96vw] flex-wrap md:flex-nowrap"
+      // 1. Rapprochement général : on réduit fortement le gap-x
+      className="flex items-center justify-center gap-x-1 sm:gap-x-3 w-full max-w-[96vw] flex-wrap md:flex-nowrap"
     >
       {/* ─── BLOC TEXTE : THE PORTFOLIO OF ─── */}
       <div className="flex items-center text-white select-none pointer-events-none">
-        {/* Vertical text "The" - Agrandi */}
+        {/* Vertical text "The" - Opacité enlevée, mis en gras, léger glow ajouté */}
         <span
-          className="-rotate-90 inline-block origin-center text-[11px] sm:text-sm md:text-base uppercase tracking-[0.2em] opacity-60 -mr-3 sm:-mr-5 select-none"
+          className="-rotate-90 inline-block origin-center text-[12px] sm:text-base md:text-lg font-bold uppercase tracking-[0.2em] text-white [text-shadow:0_0_15px_rgba(255,255,255,0.4)] -mr-3 sm:-mr-4 select-none"
           style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
         >
           The
         </span>
 
-        {/* Main "Portfolio" text - Format XXL avec effet Glow */}
+        {/* Main "Portfolio" text - Épaissi avec "font-bold" */}
         <span
-          className="text-6xl sm:text-8xl md:text-9xl font-normal tracking-tight leading-none text-white [text-shadow:0_0_40px_rgba(255,255,255,0.4)]"
+          className="text-6xl sm:text-8xl md:text-9xl font-bold tracking-tight leading-none text-white [text-shadow:0_0_40px_rgba(255,255,255,0.5)]"
           style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
         >
           Portfolio
         </span>
 
-        {/* Small transition "of" - Agrandi */}
+        {/* Small transition "of" - Opacité enlevée, un peu plus grand, léger glow ajouté */}
         <span
-          className="text-xl sm:text-3xl md:text-4xl opacity-70 ml-3 sm:ml-5 self-end mb-1.5 sm:mb-3"
+          className="text-2xl sm:text-4xl md:text-5xl font-medium text-white [text-shadow:0_0_15px_rgba(255,255,255,0.4)] ml-2 sm:ml-4 self-end mb-2 sm:mb-4"
           style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
         >
           of
         </span>
       </div>
 
-      {/* Ton logo RAW brut */}
+      {/* Ton logo RAW brut - Rapproché encore plus avec "-ml-2" */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        // La boîte du logo est beaucoup plus grande pour suivre la taille du texte
-        className="w-32 sm:w-56 md:w-72 flex items-center justify-center pt-2 md:pt-1"
+        className="w-32 sm:w-56 md:w-72 flex items-center justify-center pt-2 md:pt-1 sm:-ml-2"
       >
         <Image
           src="/raw.png"
@@ -383,8 +381,7 @@ function HeroTextSVG() {
           width={300}
           height={110}
           priority
-          // Effet glow lumineux appliqué spécifiquement à l'image PNG (drop-shadow)
-          className="w-full h-auto object-contain select-none pointer-events-none filter drop-shadow-[0_0_35px_rgba(255,255,255,0.3)]"
+          className="w-full h-auto object-contain select-none pointer-events-none filter drop-shadow-[0_0_40px_rgba(255,255,255,0.4)]"
         />
       </motion.div>
     </motion.div>
