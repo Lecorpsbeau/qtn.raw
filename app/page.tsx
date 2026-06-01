@@ -330,7 +330,7 @@ function HeroSection() {
   );
 }
 // ─────────────────────────────────────────────
-//  HERO TEXT SVG
+//  HERO TEXT / COMPOSITION LOGO (Sans fond, Grand & Glowy)
 // ─────────────────────────────────────────────
 function HeroTextSVG() {
   return (
@@ -338,55 +338,58 @@ function HeroTextSVG() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-      className="border border-white/15 bg-black/40 backdrop-blur-md rounded-[22px] sm:rounded-[32px] px-6 py-4 sm:px-12 sm:py-7 flex items-center justify-center gap-x-4 sm:gap-x-7 max-w-[92vw] flex-wrap md:flex-nowrap shadow-2xl"
+      // 1. On a retiré : bg, border, backdrop-blur, padding et les arrondis.
+      // On garde juste la structure flexible pour aligner le texte et le logo.
+      className="flex items-center justify-center gap-x-4 sm:gap-x-8 w-full max-w-[96vw] flex-wrap md:flex-nowrap"
     >
       {/* ─── BLOC TEXTE : THE PORTFOLIO OF ─── */}
-      <div className="flex items-center text-white select-none">
-        {/* Le "The" retourné verticalement sur le côté */}
+      <div className="flex items-center text-white select-none pointer-events-none">
+        {/* Vertical text "The" - Agrandi */}
         <span
-          className="-rotate-90 inline-block origin-center text-[10px] sm:text-xs uppercase tracking-widest opacity-50 -mr-2 sm:-mr-3 select-none pointer-events-none"
+          className="-rotate-90 inline-block origin-center text-[11px] sm:text-sm md:text-base uppercase tracking-[0.2em] opacity-60 -mr-3 sm:-mr-5 select-none"
           style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
         >
           The
         </span>
 
-        {/* Le mot "Portfolio" en grande écriture Serif */}
+        {/* Main "Portfolio" text - Format XXL avec effet Glow */}
         <span
-          className="text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight leading-none"
+          className="text-6xl sm:text-8xl md:text-9xl font-normal tracking-tight leading-none text-white [text-shadow:0_0_40px_rgba(255,255,255,0.4)]"
           style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
         >
           Portfolio
         </span>
 
-        {/* Le petit "of" de transition */}
+        {/* Small transition "of" - Agrandi */}
         <span
-          className="text-sm sm:text-lg md:text-xl opacity-60 ml-2.5 self-end mb-0.5 sm:mb-1.5"
-          style={{ fontFamily: "var(--font-font-dm)" }} // Vibe épurée pour le "of"
+          className="text-xl sm:text-3xl md:text-4xl opacity-70 ml-3 sm:ml-5 self-end mb-1.5 sm:mb-3"
+          style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
         >
           of
         </span>
       </div>
 
-      {/* ─── BLOC IMAGE : LOGO RAW BRUTALISTE ─── */}
+      {/* Ton logo RAW brut */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.92 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="w-28 sm:w-40 md:w-48 flex items-center justify-center pt-2 md:pt-0"
+        // La boîte du logo est beaucoup plus grande pour suivre la taille du texte
+        className="w-32 sm:w-56 md:w-72 flex items-center justify-center pt-2 md:pt-1"
       >
         <Image
           src="/raw.png"
           alt="RAW Logo"
-          width={240}
-          height={90}
+          width={300}
+          height={110}
           priority
-          className="w-full h-auto object-contain select-none pointer-events-none drop-shadow-[0_4px_12px_rgba(255,255,255,0.08)]"
+          // Effet glow lumineux appliqué spécifiquement à l'image PNG (drop-shadow)
+          className="w-full h-auto object-contain select-none pointer-events-none filter drop-shadow-[0_0_35px_rgba(255,255,255,0.3)]"
         />
       </motion.div>
     </motion.div>
   );
 }
-
 // ─────────────────────────────────────────────
 //  GALLERY SECTION (With your exact new structure)
 // ─────────────────────────────────────────────
