@@ -387,21 +387,27 @@ function HeroTextSVG() {
   );
 }
 // ─────────────────────────────────────────────
-//  GALLERY SECTION (With your exact new structure)
+//  GALLERY SECTION
 // ─────────────────────────────────────────────
 function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
-  // Changement ici : Tes nouveaux onglets issus de ton tri parfait !
-  const [filter, setFilter] = useState<"all" | "highlights" | "cars" | "brands" | "raw">("all");
+  // 1. Les nouveaux onglets basés sur tes choix
+  const [filter, setFilter] = useState<"all" | "stage3" | "cars" | "portraits" | "marques">("all");
 
-  // Filtrage dynamique selon l'anatomie de tes fichiers
-  const filteredPhotos = ALL_PHOTOS.filter((src, idx) => {
+  // 2. Filtrage dynamique selon le nom de tes dossiers
+  const filteredPhotos = ALL_PHOTOS.filter((src) => {
     if (filter === "all") return true;
-    if (filter === "cars") return src.includes("porschekultur");
-    if (filter === "brands") return src.includes("les_distingues");
 
-    // Pour qtn.raw, on sépare astucieusement tes Toppics/Highlights du reste du flux brut (Raw)
-    if (filter === "highlights") return src.includes("qtn.raw") && idx < 25;
-    if (filter === "raw") return src.includes("qtn.raw") && idx >= 25;
+    // Cherche le mot "stage3" dans le lien de l'image
+    if (filter === "stage3") return src.includes("/stage3/");
+
+    // Cherche dans "cars" (et "car1" au cas où tu l'utilises)
+    if (filter === "cars") return src.includes("/cars/") || src.includes("/car1/");
+
+    // Cherche dans "portraits", "gens" ou "gensraw"
+    if (filter === "portraits") return src.includes("/portraits/") || src.includes("/gens");
+
+    // Cherche dans le dossier "marque"
+    if (filter === "marques") return src.includes("/marque/");
 
     return true;
   });
@@ -428,7 +434,7 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
         Artwork
       </motion.h2>
 
-      {/* Barre de filtres mise à jour avec ton style */}
+      {/* 3. Barre de filtres mise à jour */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -436,14 +442,18 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="flex justify-center gap-2 flex-wrap mb-12"
       >
-        {(["all", "highlights", "cars", "brands", "raw"] as const).map(f => (
+        {(["all", "stage3", "cars", "portraits", "marques"] as const).map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={`filter-pill ${filter === f ? "filter-pill--active" : ""}`}
             style={{ fontFamily: "var(--font-dm)" }}
           >
-            {f === "all" ? "Tout" : f === "highlights" ? "Highlights" : f === "cars" ? "Automotive" : f === "brands" ? "Brands (Marque)" : "Raw"}
+            {f === "all" ? "Tout"
+              : f === "stage3" ? "Stage 3"
+                : f === "cars" ? "Automotive"
+                  : f === "portraits" ? "Portraits"
+                    : "Brands"}
           </button>
         ))}
       </motion.div>
@@ -460,7 +470,7 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
             transition={{ duration: 0.6, delay: (i % 6) * 0.05 }}
             whileHover={{ scale: 1.02 }}
             onClick={() => onOpen(globalIndex(i))}
-            data-cursor="photo" // Active ton tout nouveau système de brush !
+            data-cursor="photo"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -478,7 +488,6 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
     </section>
   );
 }
-
 // ─────────────────────────────────────────────
 //  CONTACT SECTION
 // ─────────────────────────────────────────────
