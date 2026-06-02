@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePres
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import MouseImageTrail from "@/components/ui/MouseImageTrail";
-import { TrailImage } from "../data/galleryData";
 // ─────────────────────────────────────────────
 //  REAL PHOTOS — from /public/photos/
 // ─────────────────────────────────────────────
@@ -190,11 +189,6 @@ export default function HomePage() {
 // ─────────────────────────────────────────────
 //  HERO SECTION
 // ─────────────────────────────────────────────
-ref = { ref }
-id = "hero"
-onMouseMove = { handleMouseMove }
-className = "relative flex flex-col items-center justify-center overflow-hidden cursor-none" // <-- Ajoute "cursor-none" ici uniquement
-style = {{ height: "calc(100vh - var(--nav-h))" }}
 interface TrailImage {
   id: number;
   src: string;
@@ -202,6 +196,7 @@ interface TrailImage {
   y: number;
   rotation: number;
 }
+
 function HeroSection() {
   const [activeImages, setActiveImages] = useState<TrailImage[]>([]);
   const lastMousePos = useRef({ x: 0, y: 0 });
@@ -333,7 +328,6 @@ function HeroSection() {
     </section>
   );
 }
-
 // ─────────────────────────────────────────────
 //  HERO TEXT / COMPOSITION LOGO
 // ─────────────────────────────────────────────
