@@ -1,3 +1,10 @@
+export interface TrailImage {
+    id: number;
+    src: string;
+    x: number;
+    y: number;
+    rotation: number;
+}
 export interface GalleryImage {
     id: string;
     src: string;
