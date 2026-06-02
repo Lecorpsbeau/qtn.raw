@@ -327,6 +327,38 @@ function HeroSection() {
       </div>
     </section>
   );
+  function MobileGallery({ photos }: { photos: string[] }) {
+    return (
+      <div className="absolute inset-0 z-0 block md:hidden">
+        {photos.map((src, i) => (
+          <motion.div
+            key={src}
+            className="absolute inset-0 w-full h-full"
+            initial={{ opacity: 0 }}
+            // L'animation crée une boucle où chaque image apparaît puis disparaît
+            animate={{ opacity: [0, 1, 1, 0] }}
+            transition={{
+              duration: 6, // Durée totale d'une boucle image
+              repeat: Infinity,
+              delay: i * 6, // Décalage pour chaque image
+              ease: "easeInOut"
+            }}
+          >
+            <Image
+              src={src}
+              alt="Hero mobile"
+              fill
+              className="object-cover"
+              priority={i === 0} // Charge la première image immédiatement
+              unoptimized
+            />
+            {/* Overlay sombre pour garder le texte lisible */}
+            <div className="absolute inset-0 bg-black/40" />
+          </motion.div>
+        ))}
+      </div>
+    );
+  }
 }
 // ─────────────────────────────────────────────
 //  HERO TEXT / COMPOSITION LOGO
