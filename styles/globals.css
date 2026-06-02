@@ -38,7 +38,6 @@ body {
   background-color: var(--c-base-warm);
   color: var(--c-text-main);
   overflow-x: hidden;
-  cursor: none;
 }
 
 /* ── Le Mesh rééquilibré (Les couleurs se mélangent enfin !) ── */
@@ -80,7 +79,6 @@ body {
   background-color: var(--c-base-warm);
   color: var(--c-text-main);
   overflow-x: hidden;
-  cursor: none;
 }
 
 /* ── Mesh Background Fluide & Luxueux ────── */
@@ -262,7 +260,6 @@ body {
   letter-spacing: 0.05em;
   color: var(--c-text-muted);
   background: transparent;
-  cursor: none;
   transition: all 0.25s;
 }
 
@@ -312,7 +309,6 @@ body {
   position: relative;
   border: 1px solid rgba(197, 168, 128, 0.1);
   /* Micro bordure pour détacher les photos */
-  cursor: none;
 }
 
 .masonry-img {
@@ -368,7 +364,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: none;
 }
 
 .lightbox-img-wrap {
@@ -396,7 +391,6 @@ body {
   border: 1px solid rgba(197, 168, 128, 0.3);
   color: var(--c-text-main);
   border-radius: 50%;
-  cursor: none;
   transition: all 0.2s;
   display: flex;
   align-items: center;
@@ -454,7 +448,6 @@ body {
   border-radius: 1.5rem;
   border: 2px solid rgba(197, 168, 128, 0.3);
   overflow: hidden;
-  cursor: none;
 }
 
 .entry-door::after {

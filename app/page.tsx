@@ -189,21 +189,43 @@ export default function HomePage() {
 // ─────────────────────────────────────────────
 //  HERO SECTION
 // ─────────────────────────────────────────────
-interface TrailImage {
-  id: number;
-  src: string;
-  x: number;
-  y: number;
-  rotation: number;
+// 1. Ajout de la Gallery mobile pour le Hero
+function MobileGallery({ photos }: { photos: string[] }) {
+  return (
+    <div className="absolute inset-0 z-0 block md:hidden">
+      {photos.map((src, i) => (
+        <motion.div
+          key={src}
+          className="absolute inset-0 w-full h-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            delay: i * 5,
+            ease: "easeInOut"
+          }}
+        >
+          <Image
+            src={src}
+            alt="Hero background"
+            fill
+            className="object-cover"
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-black/60" />
+        </motion.div>
+      ))}
+    </div>
+  );
 }
-
+// 2. Mise à jour du HeroSection
 function HeroSection() {
   const [activeImages, setActiveImages] = useState<TrailImage[]>([]);
   const lastMousePos = useRef({ x: 0, y: 0 });
   const imageIndex = useRef(0);
-
-  // Parallaxe au scroll (conservé à l'identique)
   const ref = useRef<HTMLElement>(null);
+
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
@@ -212,25 +234,13 @@ function HeroSection() {
     const rect = e.currentTarget.getBoundingClientRect();
     const currentX = e.clientX - rect.left;
     const currentY = e.clientY - rect.top;
+    const distance = Math.hypot(currentX - lastMousePos.current.x, currentY - lastMousePos.current.y);
 
-    // Calcul de la distance parcourue depuis la dernière image générée
-    const distance = Math.hypot(
-      currentX - lastMousePos.current.x,
-      currentY - lastMousePos.current.y
-    );
-
-    // Seuil d'apparition en pixels (ajuste si tu veux resserrer la traînée)
-    const spawnThreshold = 75;
-
-    if (distance > spawnThreshold) {
+    if (distance > 75) {
       if (TOPPICS_PHOTOS.length === 0) return;
-
-      // Pioche séquentiellement dans tes TOPPICS_PHOTOS globales
       const nextImgSrc = TOPPICS_PHOTOS[imageIndex.current % TOPPICS_PHOTOS.length];
       imageIndex.current++;
-
-      // Rotation aléatoire organique pour le côté "raw / brut"
-      const randomRotation = Math.random() * 18 - 9; // Entre -9deg et 9deg
+      const randomRotation = Math.random() * 18 - 9;
 
       const newImage: TrailImage = {
         id: Date.now() + Math.random(),
@@ -240,7 +250,6 @@ function HeroSection() {
         rotation: randomRotation,
       };
 
-      // On ajoute la nouvelle image et on limite à 10 max pour garder un max de fluidité
       setActiveImages((prev) => [...prev, newImage].slice(-10));
       lastMousePos.current = { x: currentX, y: currentY };
     }
@@ -251,11 +260,13 @@ function HeroSection() {
       ref={ref}
       id="hero"
       onMouseMove={handleMouseMove}
-      className="relative flex flex-col items-center justify-center overflow-hidden"
-      style={{ height: "calc(100vh - var(--nav-h))" }}
+      className="relative flex flex-col items-center justify-center overflow-hidden h-[calc(100vh-var(--nav-h))]"
     >
-      {/* ─── TRAÎNÉE D'IMAGES EN CASCADE (Remplace l'ancienne image unique) ─── */}
-      <div className="absolute inset-0 pointer-events-none z-10 hidden md:block overflow-hidden">
+      {/* Animation Mobile */}
+      <MobileGallery photos={TOPPICS_PHOTOS.slice(0, 10)} />
+
+      {/* Traînée Desktop avec cursor-none uniquement ici */}
+      <div className="absolute inset-0 z-10 hidden md:block cursor-none overflow-hidden">
         <AnimatePresence>
           {activeImages.map((img) => (
             <motion.div
@@ -263,68 +274,26 @@ function HeroSection() {
               initial={{ opacity: 0, scale: 0.6, rotate: img.rotation }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.4, transition: { duration: 0.3 } }}
-              className="absolute w-52 h-72 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-neutral-950"
-              style={{
-                left: img.x,
-                top: img.y,
-                x: "-50%",
-                y: "-50%",
-              }}
+              className="absolute w-52 h-72 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-neutral-950 pointer-events-none"
+              style={{ left: img.x, top: img.y, x: "-50%", y: "-50%" }}
             >
-              <Image
-                src={img.src}
-                alt="Trail link preview"
-                fill
-                className="object-cover pointer-events-none select-none"
-                unoptimized
-              />
+              <Image src={img.src} alt="Preview" fill className="object-cover" unoptimized />
             </motion.div>
           ))}
         </AnimatePresence>
       </div>
 
-      {/* ─── CONTENU (Texte & Boutons) ─── */}
-      <motion.div style={{ y, opacity }} className="flex flex-col items-center gap-10 px-4 z-20">
-
-        {/* Si tu veux afficher ton titre SVG, tu as juste à décommenter la ligne suivante : */}
-        {<HeroTextSVG />}
-        {/* Tu peux remettre ton <HeroTextSVG /> ou tes titres ici si tu veux les afficher */}
-
-        {/* CTA pills */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="flex gap-3 flex-wrap justify-center"
-        >
-          <a href="#gallery">
-            <motion.span
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              className="glass rounded-full px-6 py-2.5 text-sm font-medium text-white cursor-none select-none block"
-              style={{ fontFamily: "var(--font-dm)" }}
-              data-cursor="door"
-            >
+      {/* Contenu */}
+      <motion.div style={{ y, opacity }} className="flex flex-col items-center gap-10 px-4 z-20 pointer-events-none">
+        <HeroTextSVG />
+        <div className="flex gap-3 flex-wrap justify-center pointer-events-auto">
+          <a href="#gallery" className="cursor-pointer">
+            <motion.span whileHover={{ scale: 1.04 }} className="glass rounded-full px-6 py-2.5 text-sm font-medium text-white block">
               Voir le portfolio →
             </motion.span>
           </a>
-          <a href="#contact">
-            <motion.span
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              className="rounded-full px-6 py-2.5 text-sm font-medium text-white/60 border border-white/20 hover:border-white/50 transition-colors cursor-none select-none block"
-              style={{ fontFamily: "var(--font-dm)" }}
-            >
-              Contact
-            </motion.span>
-          </a>
-        </motion.div>
+        </div>
       </motion.div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
-        <div className="w-px h-12 bg-white animate-scroll-line origin-top" />
-      </div>
     </section>
   );
 }
