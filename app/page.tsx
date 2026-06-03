@@ -418,6 +418,42 @@ function HeroTextSVG() {
     </motion.div>
   );
 }
+function BeforeAfter({ before, after }: { before: string; after: string }) {
+  const [sliderPos, setSliderPos] = useState(50);
+  return (
+    <div className="relative w-full max-w-4xl h-[500px] overflow-hidden rounded-2xl cursor-col-resize"
+      onMouseMove={(e) => setSliderPos((e.nativeEvent.offsetX / e.currentTarget.offsetWidth) * 100)}>
+      <img src={after} className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute top-0 bottom-0 overflow-hidden" style={{ width: `${sliderPos}%` }}>
+        <img src={before} className="w-full h-full object-cover" />
+      </div>
+      <div className="absolute top-0 bottom-0 w-1 bg-white" style={{ left: `${sliderPos}%` }} />
+    </div>
+  );
+}
+function CategoryCard({ title, images }: { title: string; images: string[] }) {
+  return (
+    <motion.div
+      className="relative group p-8 bg-neutral-900 rounded-3xl cursor-pointer"
+      whileHover={{ y: -10 }}
+    >
+      <h3 className="text-3xl font-bold mb-4">{title}</h3>
+
+      {/* Images qui se décalent au survol */}
+      <div className="relative h-60">
+        {images.map((img, i) => (
+          <motion.div
+            key={i}
+            className="absolute top-0 left-0 w-40 h-52 rounded-xl overflow-hidden shadow-xl"
+            whileHover={{ x: 20 * (i + 1), rotate: 5 * (i + 1) }}
+          >
+            <img src={img} className="w-full h-full object-cover" />
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 // ─────────────────────────────────────────────
 //  GALLERY SECTION
 // ─────────────────────────────────────────────
@@ -518,6 +554,24 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
         ))}
       </div>
     </section>
+  );
+}
+function Timeline({ events }: { events: { year: string; title: string }[] }) {
+  return (
+    <div className="border-l border-white/20 ml-10 space-y-12">
+      {events.map((event, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          className="relative pl-8"
+        >
+          <div className="absolute -left-1.5 w-3 h-3 bg-white rounded-full" />
+          <span className="text-white/50 text-sm">{event.year}</span>
+          <h4 className="text-xl font-medium">{event.title}</h4>
+        </motion.div>
+      ))}
+    </div>
   );
 }
 // ─────────────────────────────────────────────
