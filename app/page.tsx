@@ -418,14 +418,24 @@ function HeroTextSVG() {
     </motion.div>
   );
 }
+<BeforeAfter
+  before="/image/qtn.raw/avantapres/qtn.raw_avantvoiture.jpg"
+  after="/image/qtn.raw/avantapres/qtn.raw_apresvoiture.jpg"
+/>
 function BeforeAfter({ before, after }: { before: string; after: string }) {
   const [sliderPos, setSliderPos] = useState(50);
   return (
-    <div className="relative w-full max-w-4xl h-[500px] overflow-hidden rounded-2xl cursor-col-resize"
-      onMouseMove={(e) => setSliderPos((e.nativeEvent.offsetX / e.currentTarget.offsetWidth) * 100)}>
-      <img src={after} className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute top-0 bottom-0 overflow-hidden" style={{ width: `${sliderPos}%` }}>
-        <img src={before} className="w-full h-full object-cover" />
+    <div
+      className="relative w-full max-w-4xl h-[500px] overflow-hidden rounded-2xl cursor-col-resize"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setSliderPos(((e.clientX - rect.left) / rect.width) * 100);
+      }}
+    >
+      {/* Utilisation de next/image pour optimiser, ou tag <img> standard */}
+      <img src={after} alt="After" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute top-0 bottom-0 overflow-hidden border-r-2 border-white" style={{ width: `${sliderPos}%` }}>
+        <img src={before} alt="Before" className="w-full h-full object-cover" style={{ width: "calc(100vw / (sliderPos/100))" }} />
       </div>
       <div className="absolute top-0 bottom-0 w-1 bg-white" style={{ left: `${sliderPos}%` }} />
     </div>
@@ -438,8 +448,6 @@ function CategoryCard({ title, images }: { title: string; images: string[] }) {
       whileHover={{ y: -10 }}
     >
       <h3 className="text-3xl font-bold mb-4">{title}</h3>
-
-      {/* Images qui se décalent au survol */}
       <div className="relative h-60">
         {images.map((img, i) => (
           <motion.div
@@ -447,7 +455,8 @@ function CategoryCard({ title, images }: { title: string; images: string[] }) {
             className="absolute top-0 left-0 w-40 h-52 rounded-xl overflow-hidden shadow-xl"
             whileHover={{ x: 20 * (i + 1), rotate: 5 * (i + 1) }}
           >
-            <img src={img} className="w-full h-full object-cover" />
+            {/* Correction du src avec le chemin public */}
+            <img src={img} alt={title} className="w-full h-full object-cover" />
           </motion.div>
         ))}
       </div>
