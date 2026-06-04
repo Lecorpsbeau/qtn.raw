@@ -172,17 +172,27 @@ function BeforeAfter({ before, after }: { before: string; after: string }) {
         const rect = e.currentTarget.getBoundingClientRect();
         setSliderPos(((e.clientX - rect.left) / rect.width) * 100);
       }}
+      onTouchMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const touch = e.touches[0];
+        setSliderPos(((touch.clientX - rect.left) / rect.width) * 100);
+      }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={after} alt="After" className="absolute inset-0 w-full h-full object-cover" />
       <div
         className="absolute top-0 bottom-0 overflow-hidden border-r-2 border-white"
         style={{ width: `${sliderPos}%` }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* FIX : On force cette div à garder la taille totale du parent */}
+        <div className="w-[calc(100vw-2rem)] md:w-[896px] h-[500px]">
+          <img
+            src={before}
+            alt="Before"
+            className="w-full h-full object-cover"
+          />  </div>
+
         <img
-          src={before}
-          alt="Before"
+          src={after}
+          alt="After"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
@@ -453,6 +463,7 @@ function HeroSection() {
       onMouseMove={handleMouseMove}
       className="relative flex flex-col items-center justify-center overflow-hidden"
       style={{ height: "calc(100vh - var(--nav-h))" }}
+
     >
       {/* Trail images */}
       <div className="absolute inset-0 pointer-events-none z-10 hidden md:block overflow-hidden">
