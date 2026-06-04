@@ -8,6 +8,51 @@ import BookingSection from "@/components/ui/BookingSection";
 import SocialSection from "@/components/ui/SocialSection";
 import { fadeUpVariants } from "@/lib/utils";
 
+// ─── Section Title helper ─────────────────────────────
+function SectionTitle({ children, subtitle }: { children: React.ReactNode; subtitle?: string }) {
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={fadeUpVariants}
+      className="text-center mb-12"
+    >
+      <h2
+        className="mb-3 inline-block px-6 py-2 rounded-2xl"
+        style={{
+          fontFamily: "var(--font-playfair)",
+          fontSize: "clamp(2rem, 5vw, 3.2rem)",
+          fontStyle: "italic",
+          background: "rgba(20,17,15,0.82)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          color: "#c5a880",
+          border: "1px solid rgba(197,168,128,0.2)",
+          boxShadow: "0 4px 32px rgba(0,0,0,0.18)",
+        }}
+      >
+        {children}
+      </h2>
+      {subtitle && (
+        <p
+          className="text-white/60 max-w-xl mx-auto text-sm leading-relaxed mt-3"
+          style={{
+            fontFamily: "var(--font-dm)",
+            background: "rgba(20,17,15,0.55)",
+            backdropFilter: "blur(8px)",
+            borderRadius: "12px",
+            padding: "8px 20px",
+            display: "inline-block",
+          }}
+        >
+          {subtitle}
+        </p>
+      )}
+    </motion.div>
+  );
+}
+
 // ─────────────────────────────────────────────
 //  REAL PHOTOS — from /public/photos/
 // ─────────────────────────────────────────────
@@ -244,33 +289,49 @@ function HeroTextSVG() {
 // ─────────────────────────────────────────────
 function BeforeAfter({ before, after }: { before: string; after: string }) {
   const [sliderPos, setSliderPos] = useState(50);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleMove = (clientX: number, rect: DOMRect) => {
+    const pos = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100));
+    setSliderPos(pos);
+  };
+
   return (
     <div
-      className="relative w-full max-w-4xl h-[500px] overflow-hidden rounded-2xl cursor-col-resize"
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        setSliderPos(((e.clientX - rect.left) / rect.width) * 100);
-      }}
+      className="relative w-full max-w-4xl overflow-hidden rounded-2xl select-none"
+      style={{ height: "min(500px, 60vw)", cursor: "col-resize" }}
+      onMouseMove={(e) => isDragging && handleMove(e.clientX, e.currentTarget.getBoundingClientRect())}
+      onMouseDown={(e) => { setIsDragging(true); handleMove(e.clientX, e.currentTarget.getBoundingClientRect()); }}
+      onMouseUp={() => setIsDragging(false)}
+      onMouseLeave={() => setIsDragging(false)}
+      onTouchMove={(e) => handleMove(e.touches[0].clientX, e.currentTarget.getBoundingClientRect())}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={after} alt="After" className="absolute inset-0 w-full h-full object-cover" />
+      {/* After (base layer) */}
+      <div className="absolute inset-0">
+        <Image src={after} alt="Après retouche" fill className="object-cover" unoptimized />
+      </div>
+
+      {/* Before (clipped layer) */}
       <div
-        className="absolute top-0 bottom-0 overflow-hidden border-r-2 border-white"
+        className="absolute top-0 bottom-0 left-0 overflow-hidden"
         style={{ width: `${sliderPos}%` }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={before}
-          alt="Before"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        <div className="relative w-full h-full" style={{ width: `${10000 / sliderPos}%`, maxWidth: "none" }}>
+          <Image src={before} alt="Avant retouche" fill className="object-cover" unoptimized style={{ objectPosition: "left" }} />
+        </div>
       </div>
+
+      {/* Labels */}
+      <span className="absolute top-3 left-4 text-[10px] font-mono tracking-widest uppercase text-white/70 bg-black/50 px-2 py-1 rounded">Brut</span>
+      <span className="absolute top-3 right-4 text-[10px] font-mono tracking-widest uppercase text-white/70 bg-black/50 px-2 py-1 rounded">Édité</span>
+
+      {/* Divider + handle */}
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)]"
+        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_16px_rgba(255,255,255,0.9)]"
         style={{ left: `${sliderPos}%` }}
       >
-        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-lg">
-          <span className="text-black text-xs font-bold select-none">⇔</span>
+        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-xl border border-white/20">
+          <span className="text-neutral-800 text-xs font-bold select-none">⇔</span>
         </div>
       </div>
     </div>
@@ -283,31 +344,9 @@ function BeforeAfterSection() {
       id="retouch"
       className="px-4 md:px-10 py-24 max-w-7xl mx-auto z-10 relative flex flex-col items-center"
     >
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={fadeUpVariants}
-        className="text-center mb-12"
-      >
-        <h2
-          className="mb-3 text-gold-gradient"
-          style={{
-            fontFamily: "var(--font-playfair)",
-            fontSize: "clamp(2rem, 5vw, 3.2rem)",
-            fontStyle: "italic",
-          }}
-        >
-          Le Rendu Brut vs Édité
-        </h2>
-        <p
-          className="text-white/50 max-w-xl mx-auto text-sm leading-relaxed"
-          style={{ fontFamily: "var(--font-dm)" }}
-        >
-          Faites glisser le curseur pour apprécier le travail de retouche colorimétrique, de
-          contraste et d'atmosphère apporté à chaque cliché.
-        </p>
-      </motion.div>
+      <SectionTitle subtitle="Faites glisser le curseur pour apprécier le travail de retouche colorimétrique, de contraste et d'atmosphère apporté à chaque cliché.">
+        Le Rendu Brut vs Édité
+      </SectionTitle>
 
       <BeforeAfter
         before="/images/qtn.raw/stage3/avantapres/qtn.raw_avantvoiture.jpg"
@@ -316,6 +355,7 @@ function BeforeAfterSection() {
     </section>
   );
 }
+
 
 // ─────────────────────────────────────────────
 //  GALLERY SECTION
@@ -339,23 +379,27 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
 
   return (
     <section id="gallery" className="px-4 md:px-10 pb-28 pt-8">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7 }}
         className="text-center mb-4"
-        style={{
-          fontFamily: "var(--font-playfair)",
-          fontSize: "clamp(1rem, 2.2vw, 1.2rem)",
-          fontStyle: "italic",
-          color: "rgba(255,255,255,0.5)",
-          letterSpacing: "0.28em",
-          textTransform: "uppercase",
-        }}
       >
-        Artwork
-      </motion.h2>
+        <span
+          className="inline-block px-6 py-2 rounded-xl text-xs font-mono tracking-[0.28em] uppercase"
+          style={{
+            fontFamily: "var(--font-playfair)",
+            fontStyle: "italic",
+            background: "rgba(20,17,15,0.75)",
+            backdropFilter: "blur(10px)",
+            color: "rgba(197,168,128,0.85)",
+            border: "1px solid rgba(197,168,128,0.15)",
+          }}
+        >
+          Artwork
+        </span>
+      </motion.div>
 
       {/* Filter pills */}
       <motion.div
@@ -479,88 +523,19 @@ function ContactSection() {
 // ─────────────────────────────────────────────
 //  HERO SECTION
 // ─────────────────────────────────────────────
-interface TrailImage {
-  id: number;
-  src: string;
-  x: number;
-  y: number;
-  rotation: number;
-}
-
 function HeroSection() {
-  const [activeImages, setActiveImages] = useState<TrailImage[]>([]);
-  const lastMousePos = useRef({ x: 0, y: 0 });
-  const imageIndex = useRef(0);
-
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const currentX = e.clientX - rect.left;
-    const currentY = e.clientY - rect.top;
-
-    const distance = Math.hypot(currentX - lastMousePos.current.x, currentY - lastMousePos.current.y);
-    const spawnThreshold = 75;
-
-    if (distance > spawnThreshold) {
-      if (TOPPICS_PHOTOS.length === 0) return;
-
-      const nextImgSrc = TOPPICS_PHOTOS[imageIndex.current % TOPPICS_PHOTOS.length];
-      imageIndex.current++;
-      const randomRotation = Math.random() * 18 - 9;
-
-      const newImage: TrailImage = {
-        id: Date.now() + Math.random(),
-        src: nextImgSrc,
-        x: currentX,
-        y: currentY,
-        rotation: randomRotation,
-      };
-
-      setActiveImages((prev) => [...prev, newImage].slice(-10));
-      lastMousePos.current = { x: currentX, y: currentY };
-    }
-  };
-
   return (
     <section
       ref={ref}
       id="hero"
-      onMouseMove={handleMouseMove}
       className="relative flex flex-col items-center justify-center overflow-hidden"
       style={{ height: "calc(100vh - var(--nav-h))" }}
     >
-      {/* Trail images */}
-      <div className="absolute inset-0 pointer-events-none z-10 hidden md:block overflow-hidden">
-        <AnimatePresence>
-          {activeImages.map((img) => (
-            <motion.div
-              key={img.id}
-              initial={{ opacity: 0, scale: 0.6, rotate: img.rotation }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.4, transition: { duration: 0.3 } }}
-              className="absolute w-52 h-72 rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-neutral-950"
-              style={{
-                left: img.x,
-                top: img.y,
-                x: "-50%",
-                y: "-50%",
-              }}
-            >
-              <Image
-                src={img.src}
-                alt="Trail image preview"
-                fill
-                className="object-cover pointer-events-none select-none"
-                unoptimized
-              />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
 
       {/* Hero content */}
       <motion.div style={{ y, opacity }} className="flex flex-col items-center gap-10 px-4 z-20">
