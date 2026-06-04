@@ -148,7 +148,7 @@ function HeroTextSVG() {
         className="w-32 sm:w-56 md:w-72 flex items-center justify-center pt-2 md:pt-1 sm:-ml-2"
       >
         <Image
-          src="/raw.png"
+          src="/logo.png"
           alt="RAW Logo"
           width={300}
           height={110}
