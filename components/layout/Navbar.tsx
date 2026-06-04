@@ -1,9 +1,11 @@
 "use client";
 
 const NAV_ITEMS = [
-  { label: "Portfolio", href: "#hero" },
-  { label: "Galerie",   href: "#gallery" },
-  { label: "Contact",   href: "#contact" },
+  { label: "Galerie",     href: "#gallery" },
+  { label: "Carte Spots", href: "#interactive-map" },
+  { label: "Réservation", href: "#booking" },
+  { label: "FAQ",         href: "#social" },
+  { label: "Contact",     href: "#contact" },
 ] as const;
 
 export default function Navbar() {

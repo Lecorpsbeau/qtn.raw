@@ -1,5 +1,7 @@
 import '../styles/globals.css';
 import MouseImageTrail from "@/components/ui/MouseImageTrail";
+import Navbar from "@/components/layout/Navbar";
+import CustomCursor from "@/components/ui/CustomCursor";
 
 export const metadata = {
   title: "The Portfolio of RAW ",
@@ -34,6 +36,9 @@ export default function RootLayout({
     <html lang="fr">
       <body>
         <div className="film-grain" />
+
+        <Navbar />
+        <CustomCursor />
 
         {/* 2. Donne-lui à manger ici avec la prop images */}
         <MouseImageTrail images={TRAIL_IMAGES} />
