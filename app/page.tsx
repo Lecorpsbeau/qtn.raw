@@ -182,7 +182,7 @@ function BeforeAfter({ before, after }: { before: string; after: string }) {
         className="absolute top-0 bottom-0 overflow-hidden border-r-2 border-white"
         style={{ width: `${sliderPos}%` }}
       >
-        {/* FIX : On force cette div à garder la taille totale du parent */}
+
         <div className="w-[calc(100vw-2rem)] md:w-[896px] h-[500px]">
           <img
             src={before}

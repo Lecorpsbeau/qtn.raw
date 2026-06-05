@@ -118,10 +118,10 @@ export default function BookingSection({ selectedSpot }: BookingSectionProps) {
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
+
         {/* Left Columns (8/12) - Packages & Form */}
         <div className="lg:col-span-8 flex flex-col gap-8">
-          
+
           {/* Packages Selector */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {(["portrait", "automobile", "editorial"] as const).map((type) => {
@@ -132,9 +132,8 @@ export default function BookingSection({ selectedSpot }: BookingSectionProps) {
                   key={type}
                   onClick={() => setPkg(type)}
                   whileHover={{ y: -4 }}
-                  className={`glass p-6 rounded-2xl border cursor-pointer flex flex-col justify-between min-h-[220px] transition-all duration-300 ${
-                    isSelected ? "border-[var(--c-gold)] shadow-xl" : "border-white/10"
-                  }`}
+                  className={`glass p-6 rounded-2xl border cursor-pointer flex flex-col justify-between min-h-[220px] transition-all duration-300 ${isSelected ? "border-[var(--c-gold)] shadow-xl" : "border-white/10"
+                    }`}
                 >
                   <div>
                     <div className="flex justify-between items-start mb-2">
@@ -165,7 +164,7 @@ export default function BookingSection({ selectedSpot }: BookingSectionProps) {
 
           {/* Booking Form Card */}
           <div className="glass rounded-3xl p-6 md:p-8 border border-white/10 relative overflow-hidden">
-            
+
             {/* macOS title bar */}
             <div className="flex items-center gap-1.5 mb-8">
               <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
@@ -270,137 +269,82 @@ export default function BookingSection({ selectedSpot }: BookingSectionProps) {
         </div>
 
         {/* Right Column (4/12) - macOS System Config styled Quote Calculator */}
+        {/* Right Column (4/12) - macOS System Config styled Quote Calculator */}
         <div className="lg:col-span-4 flex flex-col gap-6 lg:sticky lg:top-24">
-          <div className="glass rounded-3xl p-6 border border-white/10 shadow-xl">
-            
-            {/* macOS header controls */}
+          <div className="glass rounded-3xl p-6 border border-white/10 shadow-xl overflow-hidden relative">
+
+            {/* macOS header */}
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
                 <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
                 <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
               </div>
-              <span className="font-mono text-[9px] tracking-wider text-white/30 uppercase">Tarif Estimatif</span>
+              <span className="font-mono text-[9px] tracking-widest text-[var(--c-gold)] uppercase font-bold">
+                Setup Session
+              </span>
             </div>
 
-            {/* Config list resembling macOS settings menu */}
-            <div className="flex flex-col gap-5 mb-8">
-              <h3 className="font-bold text-white text-sm tracking-wide font-mono uppercase text-white/30">Formule & Options</h3>
-              
-              {/* Formula summary */}
-              <div className="flex justify-between items-baseline py-1">
-                <span className="text-white/60 text-xs font-medium">Formule : {PACKAGES[pkg].title}</span>
-                <span className="font-mono text-xs text-white font-bold">{PACKAGES[pkg].price} €</span>
+            <div className="flex flex-col gap-6 mb-8">
+              {/* Résumé dynamique */}
+              <div className="bg-white/5 rounded-xl p-4 border border-white/5">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-white/50 text-[10px] uppercase font-mono">Formule sélectionnée</span>
+                  <span className="text-white text-xs font-bold">{PACKAGES[pkg].title}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-white/50 text-[10px] uppercase font-mono">Délivrables inclus</span>
+                  <span className="text-white text-xs">{PACKAGES[pkg].deliverables}</span>
+                </div>
               </div>
 
-              <div className="w-full h-px bg-white/5" />
+              <h3 className="font-bold text-white text-[10px] tracking-widest font-mono uppercase text-white/30 px-1">
+                Optimisations créatives
+              </h3>
 
-              {/* Extra Hours Selector */}
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col">
-                  <span className="text-white text-xs font-semibold">Heures sup. (+80€/h)</span>
-                  <span className="text-[10px] text-white/30 font-mono">Prolongez la session</span>
-                </div>
-                <div className="flex items-center gap-2 bg-black/30 rounded-lg p-1 border border-white/5">
+              {/* Options avec un design plus "Switch" */}
+              {[
+                { id: 'studio', label: 'Studio Privé', sub: 'Location studio pro', price: 150 },
+                { id: 'express', label: 'Priority Delivery', sub: 'Édition 48h garantie', price: 80 },
+                { id: 'prints', label: 'Édition Fine Art', sub: '5 tirages luxe inclus', price: 50 },
+              ].map((opt) => (
+                <div key={opt.id} className="flex justify-between items-center px-1">
+                  <div className="flex flex-col">
+                    <span className="text-white text-xs font-medium">{opt.label}</span>
+                    <span className="text-[10px] text-white/30 font-mono italic">{opt.sub}</span>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => setExtraHours(h => Math.max(0, h - 1))}
-                    className="w-6 h-6 flex items-center justify-center text-xs text-white/50 hover:text-white rounded hover:bg-white/10"
+                    onClick={() => opt.id === 'studio' ? setStudio(!studio) : opt.id === 'express' ? setExpress(!express) : setPrints(!prints)}
+                    className={`w-9 h-5 rounded-full transition-all duration-300 relative flex items-center px-0.5 ${(opt.id === 'studio' ? studio : opt.id === 'express' ? express : prints) ? "bg-[var(--c-gold)]" : "bg-white/10"
+                      }`}
                   >
-                    -
-                  </button>
-                  <span className="font-mono text-xs text-white font-bold px-1 w-4 text-center">{extraHours}</span>
-                  <button
-                    type="button"
-                    onClick={() => setExtraHours(h => Math.min(4, h + 1))}
-                    className="w-6 h-6 flex items-center justify-center text-xs text-white/50 hover:text-white rounded hover:bg-white/10"
-                  >
-                    +
+                    <motion.span layout className="w-4 h-4 rounded-full bg-white shadow-sm" style={{ marginLeft: (opt.id === 'studio' ? studio : opt.id === 'express' ? express : prints) ? "14px" : "0px" }} />
                   </button>
                 </div>
-              </div>
-
-              {/* Toggle option 1: Studio */}
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col">
-                  <span className="text-white text-xs font-semibold">Studio Indoor (+150€)</span>
-                  <span className="text-[10px] text-white/30 font-mono">Location de studio photo</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setStudio(!studio)}
-                  className={`w-10 h-6 rounded-full transition-colors relative flex items-center px-0.5 ${
-                    studio ? "bg-[var(--c-gold)]" : "bg-neutral-800"
-                  }`}
-                >
-                  <motion.span
-                    layout
-                    transition={softSpring}
-                    className="w-5 h-5 rounded-full bg-white shadow"
-                    style={{ marginLeft: studio ? "14px" : "0px" }}
-                  />
-                </button>
-              </div>
-
-              {/* Toggle option 2: Express */}
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col">
-                  <span className="text-white text-xs font-semibold">Retouche Express (+80€)</span>
-                  <span className="text-[10px] text-white/30 font-mono">Livraison garantie sous 48h</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setExpress(!express)}
-                  className={`w-10 h-6 rounded-full transition-colors relative flex items-center px-0.5 ${
-                    express ? "bg-[var(--c-gold)]" : "bg-neutral-800"
-                  }`}
-                >
-                  <motion.span
-                    layout
-                    transition={softSpring}
-                    className="w-5 h-5 rounded-full bg-white shadow"
-                    style={{ marginLeft: express ? "14px" : "0px" }}
-                  />
-                </button>
-              </div>
-
-              {/* Toggle option 3: Prints */}
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col">
-                  <span className="text-white text-xs font-semibold">Tirages Fine Art x5 (+50€)</span>
-                  <span className="text-[10px] text-white/30 font-mono">Impressions physiques haute fidélité</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setPrints(!prints)}
-                  className={`w-10 h-6 rounded-full transition-colors relative flex items-center px-0.5 ${
-                    prints ? "bg-[var(--c-gold)]" : "bg-neutral-800"
-                  }`}
-                >
-                  <motion.span
-                    layout
-                    transition={softSpring}
-                    className="w-5 h-5 rounded-full bg-white shadow"
-                    style={{ marginLeft: prints ? "14px" : "0px" }}
-                  />
-                </button>
-              </div>
-
+              ))}
             </div>
 
-            {/* Total Breakdown */}
+            {/* Total Breakdown - Plus impactant */}
             <div className="border-t border-white/10 pt-6">
-              <div className="flex justify-between items-baseline mb-4">
-                <span className="text-white/40 text-xs font-mono uppercase tracking-wider">Total estimé</span>
-                <span className="text-3xl font-bold text-[var(--c-gold)] font-mono">
-                  {calculateTotal()} €
-                </span>
+              <div className="flex justify-between items-end mb-6">
+                <div>
+                  <span className="text-white/30 text-[10px] block font-mono uppercase">Total estimé</span>
+                  <span className="text-[10px] text-white/20">Taxe incluse</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-4xl font-light text-white font-mono tracking-tighter">
+                    {calculateTotal()}<span className="text-xl text-[var(--c-gold)] font-bold">€</span>
+                  </span>
+                </div>
               </div>
-              <p className="text-[10px] text-white/30 leading-normal italic text-center font-mono">
-                * Le tarif final sera validé d'un commun accord selon le spot final et les exigences créatives.
-              </p>
-            </div>
 
+              <div className="bg-gradient-to-r from-[var(--c-gold)]/20 to-transparent p-3 rounded-lg border-l-2 border-[var(--c-gold)]">
+                <p className="text-[10px] text-white/70 leading-snug">
+                  💡 <strong>Conseil :</strong> Ajouter l'option "Priority Delivery" réduit votre délai d'attente de 80% pour seulement 80€.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -432,11 +376,11 @@ export default function BookingSection({ selectedSpot }: BookingSectionProps) {
               <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-lg mb-4">
                 ✓
               </div>
-              
+
               <h3 className="text-lg font-bold text-white mb-2" style={{ fontFamily: "var(--font-playfair)" }}>
                 Demande Reçue !
               </h3>
-              
+
               <p className="text-white/60 text-xs leading-relaxed mb-6" style={{ fontFamily: "var(--font-dm)" }}>
                 Merci pour votre intérêt. Votre configuration de shooting a bien été enregistrée. Quentin prendra contact avec vous par e-mail dans les plus brefs délais pour convenir de la direction artistique.
               </p>
