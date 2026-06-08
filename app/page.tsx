@@ -89,33 +89,36 @@ function HeroTextSVG() {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-      className="flex items-center justify-center gap-x-1 sm:gap-x-3 w-full max-w-[96vw] flex-wrap md:flex-nowrap"
+      className="flex flex-col items-center justify-center gap-y-4 w-full"
     >
-      {/* ─── BLOC TEXTE : THE PORTFOLIO OF ─── */}
-      <div className="flex items-center text-white select-none pointer-events-none">
-        <span
-          className="-rotate-90 inline-block origin-center text-[12px] sm:text-base md:text-lg font-bold uppercase tracking-[0.2em] text-white [text-shadow:0_0_15px_rgba(255,255,255,0.4)] -mr-3 sm:-mr-4 select-none"
-          style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
-        >
-          The
-        </span>
+      {/* ─── BLOC COMPOSITION TITRE ─── */}
+      <div className="flex items-center text-white select-none pointer-events-none gap-x-3 sm:gap-x-4">
+        {/* Remplacement du SVG/Texte en haut à gauche par le logo miniature */}
+        <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 self-start mt-2">
+          <Image
+            src="/logow.png"
+            alt="RAW Mini Logo"
+            fill
+            className="object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+          />
+        </div>
 
         <span
-          className="text-6xl sm:text-8xl md:text-9xl font-bold tracking-tight leading-none text-white [text-shadow:0_0_40px_rgba(255,255,255,0.5)]"
+          className="text-6xl sm:text-8xl md:text-9xl font-bold tracking-tight leading-none text-white [text-shadow:0_4px_30px_rgba(0,0,0,0.7)]"
           style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
         >
           Portfolio
         </span>
 
         <span
-          className="text-2xl sm:text-4xl md:text-5xl font-medium text-white [text-shadow:0_0_15px_rgba(255,255,255,0.4)] ml-2 sm:ml-4 self-end mb-2 sm:mb-4"
+          className="text-2xl sm:text-4xl md:text-5xl font-medium text-white/80 [text-shadow:0_4px_12px_rgba(0,0,0,0.6)] ml-1 self-end mb-2 sm:mb-4"
           style={{ fontFamily: "var(--font-playfair)", fontStyle: "italic" }}
         >
           of
         </span>
       </div>
 
-      {/* RAW logo */}
+      {/* Grand logo RAW central */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -124,11 +127,11 @@ function HeroTextSVG() {
       >
         <Image
           src="/logow.png"
-          alt="RAW Logo"
+          alt="RAW Logo Grand"
           width={300}
           height={110}
           priority
-          className="w-full h-auto object-contain select-none pointer-events-none filter drop-shadow-[0_0_40px_rgba(255,255,255,0.4)]"
+          className="w-full h-auto object-contain select-none pointer-events-none filter drop-shadow-[0_10px_40px_rgba(0,0,0,0.6)]"
         />
       </motion.div>
     </motion.div>
@@ -147,18 +150,20 @@ function BeforeAfter({ before, after }: { before: string; after: string }) {
   };
 
   return (
+    /* Suppression du h-[500px] rigide pour laisser les dimensions de l'image gérer la hauteur */
     <div
-      className="relative w-full max-w-4xl h-[500px] overflow-hidden rounded-2xl cursor-col-resize"
+      className="relative w-full max-w-4xl overflow-hidden rounded-2xl cursor-col-resize select-none shadow-2xl border border-white/5"
       onMouseMove={(e) => updateSlider(e.clientX, e.currentTarget.getBoundingClientRect())}
       onTouchMove={(e) => {
         const touch = e.touches[0];
         updateSlider(touch.clientX, e.currentTarget.getBoundingClientRect());
       }}
     >
+      {/* L'image "After" est en flux normal block pour dicter la hauteur auto adaptative */}
       <img
         src={after}
         alt="After"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="w-full h-auto block pointer-events-none select-none"
       />
       <div
         className="absolute inset-0 overflow-hidden border-r-2 border-white"
@@ -167,7 +172,7 @@ function BeforeAfter({ before, after }: { before: string; after: string }) {
         <img
           src={before}
           alt="Before"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-left pointer-events-none select-none"
         />
       </div>
       <div
@@ -196,7 +201,7 @@ function BeforeAfterSection() {
         className="text-center mb-12"
       >
         <h2
-          className="mb-3 text-gold-gradient"
+          className="mb-3 text-gold-gradient [text-shadow:0_4px_16px_rgba(0,0,0,0.6)]"
           style={{
             fontFamily: "var(--font-playfair)",
             fontSize: "clamp(2rem, 5vw, 3.2rem)",
@@ -214,6 +219,7 @@ function BeforeAfterSection() {
         </p>
       </motion.div>
 
+      {/* Extension corrigée si besoin selon ton arborescence locale (.png ou .jpg) */}
       <BeforeAfter
         before="/avant.jpg"
         after="/apres.png"
@@ -230,12 +236,13 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
     "all"
   );
 
+  // Correction des filtres pour cibler les dossiers exacts de ton dossier public/photos
   const filteredPhotos = ALL_PHOTOS.filter((src) => {
     if (filter === "all") return true;
     if (filter === "stage3") return src.includes("/stage3/");
-    if (filter === "cars") return src.includes("/cars/") || src.includes("/car1/");
-    if (filter === "portraits") return src.includes("/portraits/") || src.includes("/gens");
-    if (filter === "marques") return src.includes("/marque/");
+    if (filter === "cars") return src.includes("/photos/cars/");
+    if (filter === "portraits") return src.includes("/photos/portraits/") || src.includes("/photos/gensraw/");
+    if (filter === "marques") return src.includes("/photos/marque/");
     return true;
   });
 
@@ -249,7 +256,7 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-4"
+        className="text-center mb-4 [text-shadow:0_2px_10px_rgba(0,0,0,0.5)]"
         style={{
           fontFamily: "var(--font-playfair)",
           fontSize: "clamp(1rem, 2.2vw, 1.2rem)",
@@ -335,7 +342,7 @@ function ContactSection() {
         className="contact-card max-w-2xl mx-auto glass rounded-3xl p-10 text-center"
       >
         <h2
-          className="mb-2"
+          className="mb-2 [text-shadow:0_4px_12px_rgba(0,0,0,0.5)]"
           style={{
             fontFamily: "var(--font-playfair)",
             fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
@@ -437,7 +444,6 @@ function HeroSection() {
       onMouseMove={handleMouseMove}
       className="relative flex flex-col items-center justify-center overflow-hidden"
       style={{ height: "calc(100vh - var(--nav-h))" }}
-
     >
       {/* Trail images */}
       <div className="absolute inset-0 pointer-events-none z-10 hidden md:block overflow-hidden">
