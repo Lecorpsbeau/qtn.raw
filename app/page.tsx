@@ -9,6 +9,7 @@ import SocialSection from "@/components/ui/SocialSection";
 import { ALL_PHOTOS } from "@/data/photos";
 import { TOPPICS_PHOTOS } from "@/data/toppics";
 import { fadeUpVariants } from "@/lib/utils";
+import BeforeAfter from "@/components/BeforeAfter";
 
 // ─────────────────────────────────────────────
 //  LIGHTBOX
