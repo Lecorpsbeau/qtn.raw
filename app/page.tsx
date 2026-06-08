@@ -6,34 +6,9 @@ import Image from "next/image";
 import InteractiveMap from "@/components/ui/InteractiveMap";
 import BookingSection from "@/components/ui/BookingSection";
 import SocialSection from "@/components/ui/SocialSection";
+import { ALL_PHOTOS } from "@/data/photos";
+import { TOPPICS_PHOTOS } from "@/data/toppics";
 import { fadeUpVariants } from "@/lib/utils";
-
-// ─────────────────────────────────────────────
-//  REAL PHOTOS — from /public/photos/
-// ─────────────────────────────────────────────
-const TOPPICS_PHOTOS = [
-  "/toppics/qtn.raw_1767037277_3798506456354746087_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456363112861_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456363126332_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456363134111_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456371500914_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456371533454_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456371557782_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456379884036_48773641125.jpg",
-  "/images/qtn.raw/toppics/qtn.raw_1767037277_3798506456379885845_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456379902394_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456379909558_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456379931537_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456379943044_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456421851087_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456430251955_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456430265385_48773641125.jpg",
-  "/toppics/qtn.raw_1767037277_3798506456858097642_48773641125.jpg",
-];
-
-const ALL_PHOTOS = [
-  "jdknd",
-]
 
 // ─────────────────────────────────────────────
 //  LIGHTBOX
@@ -165,39 +140,38 @@ function HeroTextSVG() {
 // ─────────────────────────────────────────────
 function BeforeAfter({ before, after }: { before: string; after: string }) {
   const [sliderPos, setSliderPos] = useState(50);
+
+  const updateSlider = (clientX: number, rect: DOMRect) => {
+    const pos = ((clientX - rect.left) / rect.width) * 100;
+    setSliderPos(Math.min(100, Math.max(0, pos)));
+  };
+
   return (
     <div
       className="relative w-full max-w-4xl h-[500px] overflow-hidden rounded-2xl cursor-col-resize"
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        setSliderPos(((e.clientX - rect.left) / rect.width) * 100);
-      }}
+      onMouseMove={(e) => updateSlider(e.clientX, e.currentTarget.getBoundingClientRect())}
       onTouchMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
         const touch = e.touches[0];
-        setSliderPos(((touch.clientX - rect.left) / rect.width) * 100);
+        updateSlider(touch.clientX, e.currentTarget.getBoundingClientRect());
       }}
     >
+      <img
+        src={after}
+        alt="After"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
       <div
-        className="absolute top-0 bottom-0 overflow-hidden border-r-2 border-white"
-        style={{ width: `${sliderPos}%` }}
+        className="absolute inset-0 overflow-hidden border-r-2 border-white"
+        style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
       >
-
-        <div className="w-[calc(100vw-2rem)] md:w-[896px] h-[500px]">
-          <img
-            src={before}
-            alt="Before"
-            className="w-full h-full object-cover"
-          />  </div>
-
         <img
-          src={after}
-          alt="After"
+          src={before}
+          alt="Before"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)]"
+        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)] pointer-events-none"
         style={{ left: `${sliderPos}%` }}
       >
         <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-lg">

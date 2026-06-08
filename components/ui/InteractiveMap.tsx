@@ -155,20 +155,6 @@ export default function InteractiveMap({ onSelectSpot }: InteractiveMapProps) {
         >
           Les Spots Île-de-France
         </h2>
-        <p
-          className="text-white/60 max-w-xl mx-auto text-sm leading-relaxed mt-4"
-          style={{
-            fontFamily: "var(--font-dm)",
-            background: "rgba(20,17,15,0.55)",
-            backdropFilter: "blur(8px)",
-            borderRadius: "12px",
-            padding: "8px 20px",
-            display: "inline-block",
-          }}
-        >
-          Explorez ma carte interactive pour découvrir mes spots photo favoris en région parisienne
-          et projetez-vous dans votre futur shooting.
-        </p>
       </motion.div>
 
       {/* macOS Window Panel */}
