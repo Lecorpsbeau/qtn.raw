@@ -177,18 +177,9 @@ export default function InteractiveMap({ onSelectSpot }: InteractiveMapProps) {
               <img
                 src="/carte.svg"
                 alt="Carte Île-de-France"
-                className="w-full h-auto"
+                className="w-full h-auto aspect-[1241/1755]"
                 style={{
-                  /*
-                    Transformation couleur :
-                    - invert(1)        : blanc → noir
-                    - sepia(1)         : noir → brun chaud
-                    - saturate(1.4)    : intensifie
-                    - hue-rotate(5deg) : légère teinte or/ambre
-                    - brightness(0.55) : sombre pour le thème dark
-                  */
-                  filter:
-                    "invert(1) sepia(0.6) saturate(1.2) hue-rotate(5deg) brightness(0.45) contrast(1.1)",
+                  filter: "invert(1) sepia(0.6) saturate(1.2) hue-rotate(5deg) brightness(0.45) contrast(1.1)",
                   opacity: 0.9,
                 }}
               />
