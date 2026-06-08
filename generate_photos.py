@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 
-# Chemin de base
-base_dir = Path("public/images/qtn.raw/stage3")
+# Le VRAI chemin de base d'après tes captures d'écran
+base_dir = Path("public/stage3")
 extensions_valides = {".jpg", ".jpeg", ".png", ".webp"}
 
 print("const ALL_PHOTOS = [")
