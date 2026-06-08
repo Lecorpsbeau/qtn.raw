@@ -140,17 +140,11 @@ export default function InteractiveMap({ onSelectSpot }: InteractiveMapProps) {
         className="text-center mb-16"
       >
         <h2
-          className="mb-3 inline-block px-6 py-2 rounded-2xl"
+          className="mb-3 text-gold-gradient [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
           style={{
             fontFamily: "var(--font-playfair)",
             fontSize: "clamp(2rem, 5vw, 3.2rem)",
             fontStyle: "italic",
-            background: "rgba(20,17,15,0.82)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            color: "#c5a880",
-            border: "1px solid rgba(197,168,128,0.2)",
-            boxShadow: "0 4px 32px rgba(0,0,0,0.18)",
           }}
         >
           Les Spots Île-de-France

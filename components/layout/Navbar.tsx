@@ -1,11 +1,11 @@
 "use client";
 
 const NAV_ITEMS = [
-  { label: "Galerie",     href: "#gallery" },
+  { label: "Galerie", href: "#gallery" },
   { label: "Carte Spots", href: "#interactive-map" },
   { label: "Réservation", href: "#booking" },
-  { label: "FAQ",         href: "#social" },
-  { label: "Contact",     href: "#contact" },
+  { label: "FAQ", href: "#social" },
+  { label: "Contact", href: "#contact" },
 ] as const;
 
 export default function Navbar() {
@@ -16,7 +16,11 @@ export default function Navbar() {
     >
       {/* Logo */}
       <a href="#hero" className="flex-shrink-0" data-cursor="nav">
-        <RawLogo />
+        <img
+          src="/logow.png"
+          alt="RAW Logo"
+          className="w-16 sm:w-20 h-auto object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] transition-transform hover:scale-105"
+        />
       </a>
 
       {/* Nav pill */}
@@ -37,37 +41,5 @@ export default function Navbar() {
         ))}
       </nav>
     </header>
-  );
-}
-
-/* ── SVG Logo ── */
-function RawLogo() {
-  return (
-    <svg
-      width="88"
-      height="40"
-      viewBox="0 0 88 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="RAW"
-    >
-      {/* Spikes */}
-      <line x1="4"  y1="6"  x2="13" y2="20" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
-      <line x1="4"  y1="6"  x2="18" y2="15" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
-      <line x1="84" y1="4"  x2="76" y2="18" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
-      <line x1="84" y1="4"  x2="70" y2="13" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
-
-      {/* Text */}
-      <text
-        x="8"
-        y="33"
-        fontFamily="'Dela Gothic One', sans-serif"
-        fontSize="26"
-        fill="white"
-        letterSpacing="-0.5"
-      >
-        raw
-      </text>
-    </svg>
   );
 }

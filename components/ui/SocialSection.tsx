@@ -74,7 +74,7 @@ export default function SocialSection() {
   return (
     <section id="social" className="px-4 md:px-10 py-24 max-w-7xl mx-auto z-10 relative">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-        
+
         {/* Left: Testimonials / Témoignages */}
         <div className="flex flex-col gap-8">
           <motion.div
@@ -84,7 +84,7 @@ export default function SocialSection() {
             variants={fadeUpVariants}
           >
             <h2
-              className="mb-3 text-gold-gradient"
+              className="mb-3 text-gold-gradient [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
               style={{
                 fontFamily: "var(--font-playfair)",
                 fontSize: "clamp(2rem, 4.5vw, 2.8rem)",
@@ -117,7 +117,7 @@ export default function SocialSection() {
                 <div className="w-10 h-10 rounded-xl bg-[var(--c-gold)] text-neutral-900 font-bold font-mono text-xs flex items-center justify-center flex-shrink-0 select-none">
                   {t.avatar}
                 </div>
-                
+
                 <div className="flex-1 flex flex-col gap-1">
                   <div className="flex justify-between items-baseline">
                     <span className="font-bold text-white text-sm" style={{ fontFamily: "var(--font-dm)" }}>
@@ -127,7 +127,7 @@ export default function SocialSection() {
                       {t.role}
                     </span>
                   </div>
-                  
+
                   {/* Stars Rating */}
                   <div className="flex gap-0.5 text-xs text-[var(--c-gold)] mb-1">
                     {Array.from({ length: t.rating }).map((_, i) => (
@@ -153,7 +153,7 @@ export default function SocialSection() {
             variants={fadeUpVariants}
           >
             <h2
-              className="mb-3 text-gold-gradient"
+              className="mb-3 text-gold-gradient [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
               style={{
                 fontFamily: "var(--font-playfair)",
                 fontSize: "clamp(2rem, 4.5vw, 2.8rem)",
@@ -195,7 +195,7 @@ export default function SocialSection() {
                       ▼
                     </motion.span>
                   </button>
-                  
+
                   <AnimatePresence initial={false}>
                     {isOpen && (
                       <motion.div
