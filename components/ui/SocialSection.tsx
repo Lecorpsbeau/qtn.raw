@@ -84,10 +84,10 @@ export default function SocialSection() {
             variants={fadeUpVariants}
           >
             <h2
-              className="mb-3 text-gold-gradient [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
+              className="mb-4 inline-block glass rounded-full px-6 py-2 text-gold-gradient select-none"
               style={{
                 fontFamily: "var(--font-playfair)",
-                fontSize: "clamp(2rem, 4.5vw, 2.8rem)",
+                fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
                 fontStyle: "italic",
               }}
             >
@@ -153,10 +153,10 @@ export default function SocialSection() {
             variants={fadeUpVariants}
           >
             <h2
-              className="mb-3 text-gold-gradient [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
+              className="mb-4 inline-block glass rounded-full px-6 py-2 text-gold-gradient select-none"
               style={{
                 fontFamily: "var(--font-playfair)",
-                fontSize: "clamp(2rem, 4.5vw, 2.8rem)",
+                fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
                 fontStyle: "italic",
               }}
             >

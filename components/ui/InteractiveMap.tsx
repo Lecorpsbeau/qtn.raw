@@ -140,10 +140,10 @@ export default function InteractiveMap({ onSelectSpot }: InteractiveMapProps) {
         className="text-center mb-16"
       >
         <h2
-          className="mb-3 text-gold-gradient [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
+          className="mb-3 inline-block glass rounded-full px-8 py-3 text-gold-gradient select-none"
           style={{
             fontFamily: "var(--font-playfair)",
-            fontSize: "clamp(2rem, 5vw, 3.2rem)",
+            fontSize: "clamp(1.8rem, 4.5vw, 2.8rem)",
             fontStyle: "italic",
           }}
         >
@@ -177,6 +177,7 @@ export default function InteractiveMap({ onSelectSpot }: InteractiveMapProps) {
               <img
                 src="/carte.svg"
                 alt="Carte Île-de-France"
+                // AJOUT DE L'ASPECT RATIO ICI POUR RÉSERVER L'ESPACE SQUELETTE
                 className="w-full h-auto aspect-[1241/1755]"
                 style={{
                   filter: "invert(1) sepia(0.6) saturate(1.2) hue-rotate(5deg) brightness(0.45) contrast(1.1)",
