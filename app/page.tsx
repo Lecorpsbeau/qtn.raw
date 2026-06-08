@@ -9,7 +9,6 @@ import SocialSection from "@/components/ui/SocialSection";
 import { ALL_PHOTOS } from "@/data/photos";
 import { TOPPICS_PHOTOS } from "@/data/toppics";
 import { fadeUpVariants } from "@/lib/utils";
-import BeforeAfter from "@/components/BeforeAfter";
 
 // ─────────────────────────────────────────────
 //  LIGHTBOX
@@ -170,6 +169,59 @@ function BeforeAfterSection() {
 
       <BeforeAfter before="/avant.jpg" after="/apres.png" />
     </section>
+  );
+}
+// ─────────────────────────────────────────────
+//  COMPOSANT INTERACTIF : SLIDER AVANT / APRÈS
+// ─────────────────────────────────────────────
+function BeforeAfter({ before, after }: { before: string; after: string }) {
+  const [sliderPosition, setSliderPosition] = useState(50);
+
+  return (
+    <div className="relative w-full max-w-4xl aspect-[4/3] md:aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-neutral-900 group select-none">
+      {/* Image Avant */}
+      <img
+        src={before}
+        alt="Rendu Avant"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+      />
+
+      {/* Image Après (découpée dynamiquement selon le slider) */}
+      <img
+        src={after}
+        alt="Rendu Après"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
+      />
+
+      {/* Ligne de séparation et curseur visuel */}
+      <div
+        className="absolute top-0 bottom-0 w-0.5 bg-white pointer-events-none z-20 shadow-[0_0_10px_rgba(0,0,0,0.5)]"
+        style={{ left: `${sliderPosition}%` }}
+      >
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-neutral-900 shadow-xl flex items-center justify-center text-xs font-bold backdrop-blur-sm bg-white/90">
+          ↔
+        </div>
+      </div>
+
+      {/* Zone invisible pour draguer/glisser le curseur */}
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={sliderPosition}
+        onChange={(e) => setSliderPosition(Number(e.target.value))}
+        className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
+      />
+
+      {/* Badges d'information */}
+      <span className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md text-white text-[10px] uppercase tracking-widest font-mono px-2 py-1 rounded border border-white/10 z-10">
+        Brut
+      </span>
+      <span className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-[#c5a880] text-[10px] uppercase tracking-widest font-mono px-2 py-1 rounded border border-white/10 z-10">
+        Édité
+      </span>
+    </div>
   );
 }
 // ─────────────────────────────────────────────
