@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { softSpring, fadeUpVariants } from "@/lib/utils";
+import SeriesTitle from "./SeriesTitle";
 
 interface FAQItem {
   question: string;
@@ -83,16 +84,7 @@ export default function SocialSection() {
             viewport={{ once: true, margin: "-100px" }}
             variants={fadeUpVariants}
           >
-            <h2
-              className="mb-4 inline-block glass rounded-full px-6 py-2 text-gold-gradient select-none"
-              style={{
-                fontFamily: "var(--font-playfair)",
-                fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
-                fontStyle: "italic",
-              }}
-            >
-              Avis Clients
-            </h2>
+            <SeriesTitle title="Avis Clients" style="glass-gold" as="h2" className="mb-4" />
             <p
               className="text-white/50 text-sm leading-relaxed"
               style={{ fontFamily: "var(--font-dm)" }}
@@ -152,16 +144,7 @@ export default function SocialSection() {
             viewport={{ once: true, margin: "-100px" }}
             variants={fadeUpVariants}
           >
-            <h2
-              className="mb-4 inline-block glass rounded-full px-6 py-2 text-gold-gradient select-none"
-              style={{
-                fontFamily: "var(--font-playfair)",
-                fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
-                fontStyle: "italic",
-              }}
-            >
-              FAQ Dynamique
-            </h2>
+            <SeriesTitle title="FAQ Dynamique" style="glass-gold" as="h2" className="mb-4" />
             <p
               className="text-white/50 text-sm leading-relaxed"
               style={{ fontFamily: "var(--font-dm)" }}

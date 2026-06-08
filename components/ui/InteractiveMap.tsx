@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { softSpring, fadeUpVariants } from "@/lib/utils";
+import SeriesTitle from "./SeriesTitle";
 
 export interface Spot {
   id: string;
@@ -139,18 +140,8 @@ export default function InteractiveMap({ onSelectSpot }: InteractiveMapProps) {
         variants={fadeUpVariants}
         className="text-center mb-16"
       >
-        <h2
-          className="mb-3 inline-block glass rounded-full px-8 py-3 text-gold-gradient select-none"
-          style={{
-            fontFamily: "var(--font-playfair)",
-            fontSize: "clamp(1.8rem, 4.5vw, 2.8rem)",
-            fontStyle: "italic",
-          }}
-        >
-          Les Spots Île-de-France
-        </h2>
+        <SeriesTitle title="Les Spots Île-de-France" style="glass-gold" as="h2" />
       </motion.div>
-
       {/* macOS Window Panel */}
       <div className="glass rounded-3xl overflow-hidden shadow-2xl border border-white/10 flex flex-col md:flex-row min-h-[500px]">
         {/* Left: SVG carte.svg */}
