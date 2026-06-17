@@ -9,6 +9,8 @@ import SocialSection from "@/components/ui/SocialSection";
 import { ALL_PHOTOS } from "@/data/photos";
 import { TOPPICS_PHOTOS } from "@/data/toppics";
 import { fadeUpVariants } from "@/lib/utils";
+import gallery from "@/app/gallery/gallery";
+import Link from "next/link";
 
 
 // ─────────────────────────────────────────────
@@ -334,6 +336,12 @@ function GallerySection({ onOpen }: { onOpen: (i: number) => void }) {
             </div>
           </motion.div>
         ))}
+      </div>
+
+      <div className="flex justify-center mt-12">
+        <Link href="/galerie" className="px-6 py-3 bg-[var(--c-gold)] text-neutral-900 font-medium rounded-lg hover:opacity-90 transition-opacity">
+          Voir la galerie complète
+        </Link>
       </div>
     </section>
   );

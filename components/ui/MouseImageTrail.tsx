@@ -59,7 +59,7 @@ export default function MouseImageTrail({ images }: MouseImageTrailProps) {
                 rotation: randomRotation,
             };
 
-            setActiveImages((prev) => [...prev, newImage].slice(-10));
+            setActiveImages((prev) => [...prev, newImage].slice(-5));
             lastMousePos.current = { x: currentX, y: currentY };
         }
     };
